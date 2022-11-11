@@ -11,6 +11,7 @@ echo " nc) Netcat Listen"
 echo " a) Block INPUT"
 echo " b) Block OUTPUT"
 echo " c) Delet All"
+echo " ct) Contacts"
 echo " q) quit"
 echo "========================="
 read a
@@ -125,6 +126,17 @@ read a
 	 sudo sh /home/$USER/.fwmanager/.ilog && sudo sh /home/$USER/.fwmanager/.olog
 	 sudo rm -r /home/$USER/.fwmanager/.ilog &&  sudo rm -r /home/$USER/.fwmanager/.olog
          echo;;
+
+
+	ct)
+	  echo "DeFi Minds contacts at now is these;"
+	  echo "Twitter Project: @defiminds| email: defiminds@onionmail.org"
+	  echo "Buy me a coffe if you think can the addresses is these;"
+	  echo "Bitcoin: 1DAUErsj85tKgkhBBr5Exj8oEk5fE3sBiy"
+	  echo "Stacks: SP22RY83R4XBX26K3SK5SX5Z6PQSE3ZSXRT5XRVZF"
+	  echo "Ethereum: 0x0987A758c3f9a1d189bd14bEece21Fd61bBC5755"
+	  sleep 7
+	  echo;;
 
 	q)
          exit;;
