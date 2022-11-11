@@ -135,12 +135,7 @@ read a
 
 	sysctl)
 	 echo " Downloading the custom file to replace in /etc/sysctl.conf  ...."
-	 echo " [REQUIREMENT] You accept use TOR to Download this file or no? y/n" && read qtor
-	 if [ $qtor=="y" ];
-	  .torsocks on && wget
-	 then
-	 fi
-	 sudo iptables -L
+	 sudo mv sysctl.conf /etc/sysctl.conf && sudo sysctl -p
          echo;;
 
 	wipe)
