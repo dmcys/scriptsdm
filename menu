@@ -199,7 +199,7 @@ menu
   echo;;
 
 fw)
-sudo sh ./firewall/fwmanager
+xfce4-terminal -e sudo sh ./firewall/fwmanager
 echo;;
 
 c)
