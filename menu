@@ -79,7 +79,7 @@ case $a in
         then
         echo""
         else
-        sudo apt -y remove unzip | sudo apt -y purge unzip
+        sudo apt -y remove unzip && sudo apt -y purge unzip
        fi
         echo;;
     4t)
