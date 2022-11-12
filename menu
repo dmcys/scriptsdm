@@ -1,205 +1,73 @@
 #!bin/sh
-echo "Insert your user to interact;"
-read USER
+clear
 {
 while true $a in $='a'
 do
+menu
 clear
-echo "==========================="
+echo "========================================"
 echo "DeFi Minds - Menu"
-echo "1) Network Install"
-echo "2) Install Librewolf"
-echo "3) Config i2p/gcat client"
-echo "4) Config i2p/gcat server"
-echo "--------------------------"
-echo "fw) Firewall Script"
-echo "c) Contacts"
-echo "q) Quit"
-echo "==========================="
+echo "1) Network Install | 2) Install Browsers"
+echo "----------------------------------------"
+echo "3) Config gcat/client | 4) gcat/server"
+echo "5) Config i2p"
+echo "----------------------------------------"
+echo "f) Firewall Script"
+echo "c) Contacts | q) Quit"
+echo "========================================="
 read a
 echo "You choiced: $a"
 case $a in
+1)
+{
+while true $if1 in $='if1'
+do
+menu
+clear
+ echo "======================================================"
+ echo " Network Install"
+ echo " 1) Install TOR | 2) Install i2p | 3) Install Onioncat"
+ echo "------------------------------------------------------"
+ echo " 4) Remove TOR | 5) Remove i2p | 6) Remove Onioncat"
+ echo "------------------------------------------------------"
+ echo " r) Return"
+ echo "======================================================"
+ read if1
+ echo "You choiced: $if1"
+ case $if1 in
  1)
-  {
-   while true $if1 in $='if1'
-   do
-   clear
-   echo "======================"
-   echo "    Network Install"
-   echo " 1i) Install TOR"
-   echo " 2i) Install i2p"
-   echo " 3o) Install Onioncat"
-   echo "----------------------"
-   echo " 4t) Remove TOR"
-   echo " 5i)  Remove i2p"
-   echo " 6o)  Remove Onioncat"
-   echo "======================"
-   echo ""
-   read if1
-   echo "You choiced: $if1"
-    case $if1 in
-     1i)
-      echo "Updating distro and installing TOR...." && sleep 2
-      sudo apt -y update;sudo apt -y install tor && sudo systemctl disable tor && sudo systemctl start tor
-      echo;;
-     2i)
-      sudo apt -y install apt-transport-https lsb-release curl
-      echo "Inserting i2p repo." && sleep 2
-      echo "deb [signed-by=/usr/share/keyrings/i2p-archive-keyring.gpg] https://deb.i2p2.de/ $(lsb_release -sc) main" \ | sudo tee /etc/apt/sources.list.d/i2p.list
-      echo "Downloading the GPG Key of i2p." && sleep 2
-      curl -o /home/$USER/i2p-archive-keyring.gpg https://geti2p.net/_static/i2p-archive-keyring.gpg
-      gpg --keyid-format long --import --import-options show-only --with-fingerprint /home/$USER/i2p-archive-keyring.gpg
-      sudo cp /home/$USER/i2p-archive-keyring.gpg /usr/share/keyrings
-      sudo ln -sf /usr/share/keyrings/i2p-archive-keyring.gpg /etc/apt/trusted.gpg.d/i2p-archive-keyring.gpg
-      sudo apt -y update
-      sudo apt -y install i2p i2p-keyring
-      echo "i2p has installed! start now? y/n"
-	read startnow
-       	 if [ $startnow=="y" ];
-          then
-           i2prouter start
-	  else
-	   echo "Ok"
-	 fi
-	echo;;
-    3o)
-      echo "Downloading onioncat.." && sleep 2
-      sudo apt -y update && sudo apt -y install unzip
-      cd /home/$USER/
-      wget https://github.com/rahra/onioncat/archive/refs/heads/master.zip
-      unzip master.zip
-      cd onioncat-master/
-      echo "Onioncat Downloaded! now go install!" && sleep 2
-      sudo sh /home/$USER/onioncat-master/autogen.sh
-      ./configure
-      sudo make
-      sudo make install
-      echo "You choose keep unzip or remove this lib? y/n" && read ksc
-       if [ $ksc=="y" ];
-        then
-        echo""
-        else
-        sudo apt -y remove unzip && sudo apt -y purge unzip
-       fi
-        echo;;
-    4t)
-     echo "Removing TOR.." && sudo apt -y remove tor && sudo apt -y purge tor && sudo apt -y autoremove && sudo apt -y clean
-     echo;;
-    5i)
-     echo "Removing i2p.." && sudo apt -y remove i2p && sudo apt -y purge i2p && sudo apt -y autoremove && sudo apt -y clean
-     echo;;
-    6o)
-     rm -r /home/$USER/onioncat*
-     echo;;
-    q)
-     exit;;
-esac
-done
-menu
-}
-echo;;
+  echo "Updating distro and installing TOR...." && sleep 2 && sudo apt -y update;sudo apt -y install tor && sudo systemctl disable tor && sudo systemctl start tor
+  echo;;
+ 2)
+  xfce4-terminal -x sudo sh ./i2p/i2pinstall
+  echo;;
+ 3)
+  xfce4-terminal -x sudo sh ./ocat/ocatinstall
+  echo;;
+ 4)
+  echo "Removing TOR.." && sudo apt -y remove tor && sudo apt -y purge tor && sudo apt -y autoremove && sudo apt -y clean
+  echo;;
+ 5)
+  echo "Removing i2p.." && sudo apt -y remove i2p && sudo apt -y purge i2p && sudo apt -y autoremove && sudo apt -y clean
+  echo;;
+ 6)
+  rm -r /home/$USER/onioncat*
+  echo;;
 
+ r)
+  clear
+  exit;;
+
+ esac
+ done
+ }
+echo;;
 2)
-distro=$(if echo " bullseye focal impish jammy uma una vanessa" | grep -q " $(lsb_release -sc) "; then echo $(lsb_release -sc); else echo focal; fi)
-wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg
-sudo tee /etc/apt/sources.list.d/librewolf.sources << EOF > /dev/null
-Types: deb
-URIs: https://deb.librewolf.net
-Suites: $distro
-Components: main
-Architectures: amd64
-Signed-By: /usr/share/keyrings/librewolf.gpg
-EOF
-sudo apt update
-sudo apt install librewolf -y
+xfce4-terminal -x sudo sh ./browsers/bwinstall
 echo;;
 
-3)
-{
-while true $browsr in $='browsr'
-do
-menu
-echo "Starting the configuration of ocat/gcat"
-echo "step 1) Copy your ipv6 address below."
-sudo ip address
-sleep 5
-echo "step 2) Choose your specific browser;"
-echo "       l)ibrewolf, b)rave, f)irefox"
-echo "=====:"
-read browsr
-echo "=====:"
-echo "after choose the browser is opened and you insert this;"
-echo "=============================BROWSER=================================="
-echo "Name: gcat-client" | echo "Type: SOCKS 4/4a/5 proxy"
-echo "Description: Garlicat Client Tunnel" | echo " [x] Auto Start Tunnel"
-echo "Port: 9051" | echo "Reachable by: 127.0.0.1"
-echo "======================================================================"
-sleep 4
-echo ""
- case $browsr in
-  l)
-   xfce4-terminal -e librewolf http://127.0.0.1:7657/i2ptunnelmgr
-  echo;;
-  b)
-   xfce4-terminal -e brave http://127.0.0.1:7657/i2ptunnelmgr
-  echo;;
-  f)
-   xfce4-terminal -e firefox http://127.0.0.1:7657/i2ptunnelmgr
-echo "step 4) Compile Hosts File"
-echo "after configured your browser, one new setup has showed."
-echo "this indicate one new application in your setup."
-echo "press Start in the gcat-client application."
-ocat -I -i 
-esac
-done
-menu
-}
-  echo;;
-
-4)
-{
-while true $browsr in $='browsr'
-do
-menu
-echo "Starting the configuration of ocat/gcat"
-echo "step 1) Copy your ipv6 address below."
-sudo ip address
-sleep 5
-echo "step 2) Choose your specific browser;"
-echo "       l)ibrewolf, b)rave, f)irefox"
-echo "=====:"
-read browsr
-echo "=====:"
-echo "after choose the browser is opened and you insert this;"
-echo "=============================BROWSER=================================="
-echo "Name: gcat-server" | echo "Type: Standard"
-echo "Description: Garlicat Client Tunnel" | echo " [x] Auto Start Tunnel"
-echo "Port: 8061" | echo "Reachable by: 127.0.0.1"
-echo "======================================================================"
-sleep 4
-echo ""
- case $browsr in
-  l)
-   xfce4-terminal -e librewolf http://127.0.0.1:7657/i2ptunnelmgr
-  echo;;
-  b)
-   xfce4-terminal -e brave http://127.0.0.1:7657/i2ptunnelmgr
-  echo;;
-  f)
-   xfce4-terminal -e firefox http://127.0.0.1:7657/i2ptunnelmgr
-echo "step 4) Compile Hosts File"
-echo "after configured your browser, one new setup has showed."
-echo "this indicate one new application in your setup."
-echo "press Start in the gcat-client application."
-ocat -I -i 
-esac
-done
-menu
-}
-  echo;;
-
-fw)
-xfce4-terminal -e sudo sh ./firewall/fwmanager
+f)
+xfce4-terminal -x sudo sh ./firewall/fwmanager
 echo;;
 
 c)
