@@ -22,17 +22,14 @@ read a
 	nc)
 	 echo "Insert the protol to listen the port, Ex: tcp" && read ncproto
 	 echo "Insert the port to listen" && read ncport
-	 if [ $ncproto=="tcp" ];
-	 then
-	  if [ $ncport=<"1024"];
-	  then
+	 if [ $ncproto=="tcp" ]; then
+	  if [ $ncport=<"1024"]; then
 	   sudo nc -l $ncport
 	  else
 	   nc -l $ncport
 	  fi
 	 else
-	  if [ $ncport=<"1024"];
-	  then
+	  if [ $ncport=<"1024"]; then
 	   sudo nc -u -l $ncport
 	  else
 	   nc -u -l $ncport
@@ -63,11 +60,11 @@ read a
 		then
 		 destport="01:65535"
 		 cmd=sudo iptables -I $chain -p $protocol -s $sourceip -d $externalip --dport $destport -j $policy
-	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .ilog
+	  	 mkdir .log/ && echo $cmd >> .ilog
 	  	 sudo iptables-save
 		else
 		 cmd=sudo iptables -I $chain -p $protocol -s $sourceip -d $externalip --dport $destport -j $policy
-	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .ilog
+	  	 mkdir .log/ && echo $cmd >> .ilog
 		 sudo iptables-save
 		fi
 		echo;;
@@ -78,9 +75,9 @@ read a
 	  	 sudo iptables-save
 		echo;;
 		3)
-		 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.ilog -i
-		 sudo sh /home/$USER/.fwmanager/.ilog
-		 sudo rm -r /home/$USER/.fwmanager/.ilog
+		 sed -i 's/-I/-D/g' ./.log/.ilog -i
+		 sudo sh ./.log/.ilog
+		 sudo rm -r ./.log/.ilog
 		echo;;
 	 esac
 	 done
@@ -92,11 +89,10 @@ read a
 	 {
 	 while true $b in $='b'
 	 do
-	 echo "================="
-	 echo " 1) Block IP/PORT"
-	 echo " 2) Block ALL"
+	 echo "================================"
+	 echo " 1) Block IP/PORT | 2) Block ALL"
 	 echo " 3) Del ALL Rules"
-	 echo "================="
+	 echo "================================"
 	  read b
 	   case $b in
 		1)
