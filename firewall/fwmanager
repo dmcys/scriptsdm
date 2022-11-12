@@ -138,7 +138,7 @@ read a
 
 	sysctl)
 	 echo " Downloading the custom file to replace in /etc/sysctl.conf  ...."
-	 sudo mv sysctl.conf /etc/sysctl.conf && sudo sysctl -p
+	 sudo mv sysctl.conf /etc/sysctl.conf && sudo sysctl -p && sudo sysctl -w net.ipv4.route.flush=1
          echo;;
 
 	wipe)
