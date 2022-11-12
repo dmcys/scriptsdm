@@ -1,0 +1,28 @@
+clear
+echo "This script install i2p with the correctly form." && echo "following the original tutorial in the i2p website." && echo "Press Enter to continue or q to quit"
+read enter
+if [ $enter=="q" ];
+then
+exit
+else
+echo "Downloading i2p.."
+fi
+sudo apt -y install apt-transport-https lsb-release curl
+echo "Inserting i2p repo." && sleep 2
+echo "deb [signed-by=/usr/share/keyrings/i2p-archive-keyring.gpg] https://deb.i2p2.de/ $(lsb_release -sc) main" \ | sudo tee /etc/apt/sources.list.d/i2p.list
+echo "Downloading the GPG Key of i2p." && sleep 2
+curl -o /home/$USER/i2p-archive-keyring.gpg https://geti2p.net/_static/i2p-archive-keyring.gpg
+gpg --keyid-format long --import --import-options show-only --with-fingerprint /home/$USER/i2p-archive-keyring.gpg
+sudo cp /home/$USER/i2p-archive-keyring.gpg /usr/share/keyrings
+sudo ln -sf /usr/share/keyrings/i2p-archive-keyring.gpg /etc/apt/trusted.gpg.d/i2p-archive-keyring.gpg
+sudo apt -y update
+sudo apt -y install i2p i2p-keyring
+echo "i2p has installed! start now? y/n"
+ read startnow
+ if [ $startnow=="y" ];
+  then
+   i2prouter start
+  else
+   echo "Ok"
+ fi
+exit;;
