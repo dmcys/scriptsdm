@@ -10,6 +10,9 @@ echo " nc) Netcat Listen"
 echo " a) Chain Manager"
 echo " b) Delet All Preset maked"
 echo "----------------------------------"
+echo "       VULNERABILITIES FIX"
+echo " 1) TCP SACK PANIC"
+echo "----------------------------------"
 echo " sysctl) Insert Custom sysctl.conf"
 echo " wipe) Wipe All FW Rules"
 echo " q) quit"
@@ -60,11 +63,11 @@ read a
 		then
 		 destport="01:65535"
 		 cmd=sudo iptables -I $chain -p $protocol -s $sourceip -d $externalip --dport $destport -j $policy
-	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .fwlog
+	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .ilog
 	  	 sudo iptables-save
 		else
 		 cmd=sudo iptables -I $chain -p $protocol -s $sourceip -d $externalip --dport $destport -j $policy
-	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .fwlog
+	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .ilog
 		 sudo iptables-save
 		fi
 		echo;;
@@ -75,9 +78,49 @@ read a
 	  	 sudo iptables-save
 		echo;;
 		3)
-		 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.fwlog -i
-		 sudo sh /home/$USER/.fwmanager/.fwlog
-		 sudo rm -r /home/$USER/.fwmanager/.fwlog
+		 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.ilog -i
+		 sudo sh /home/$USER/.fwmanager/.ilog
+		 sudo rm -r /home/$USER/.fwmanager/.ilog
+		echo;;
+	 esac
+	 done
+	 }
+         echo;;
+
+	b)
+	 clear
+	 {
+	 while true $b in $='b'
+	 do
+	 echo "================="
+	 echo " 1) Block IP/PORT"
+	 echo " 2) Block ALL"
+	 echo " 3) Del ALL Rules"
+	 echo "================="
+	  read b
+	   case $b in
+		1)
+		 echo "Insert Protocol, Ex: tcp" && read protocol
+		 echo "Insert Source IP Local, Ex: 192.168.1.10 or  127.0.0.1 or 192.168.1.0/24 <--> 192.168.1.255" && read sourceip
+		 echo "Insert Destination IP External, Ex: 1.1.1.1 or range Ex: 1.1.1.0/24 <--> 1.1.1.255" && read externalip
+	         echo "Insert Desination Port External, Ex: 80 or you need block all ports insert the text: all" && read destport
+		if [ $destport=="all" ];
+		then
+		 destport="01:65535"
+		 cmd=sudo iptables -I OUTPUT -p $protocol -s $sourceip -d $externalip --dport $destport -j DROP
+	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .olog
+		else
+		 cmd=sudo iptables -I OUTPUT -p $protocol -s $sourceip -d $externalip --dport $destport -j DROP
+	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .olog
+		fi
+		echo;;
+		2)
+		 sudo iptables -P OUTPUT DROP && sudo iptables -I OUTPUT -j DROP
+		echo;;
+		3)
+		 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.olog -i
+		 sudo sh /home/$USER/.fwmanager/.olog
+		 sudo rm -r /home/$USER/.fwmanager/.olog
 		echo;;
 	 esac
 	 done
@@ -85,9 +128,9 @@ read a
          echo;;
 
 	c)
-	 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.fwlog -i && sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.fwlog -i
-	 sudo sh /home/$USER/.fwmanager/.fwlog && sudo sh /home/$USER/.fwmanager/.fwlog
-	 sudo rm -r /home/$USER/.fwmanager/.fwlog &&  sudo rm -r /home/$USER/.fwmanager/.fwlog
+	 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.ilog -i && sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.olog -i
+	 sudo sh /home/$USER/.fwmanager/.ilog && sudo sh /home/$USER/.fwmanager/.olog
+	 sudo rm -r /home/$USER/.fwmanager/.ilog &&  sudo rm -r /home/$USER/.fwmanager/.olog
          echo;;
 
 	q)
@@ -102,6 +145,13 @@ read a
 	 sudo iptables -F && sudo iptables -X && sudo iptables -Z
 	 sudo iptables -L
          echo;;
+1)
+ sudo iptables -I INPUT -p tcp --tcp-flags SYN SYN -m tcpmss --mss 1:500 -j DROP
+ sudo ip6tables -I INPUT -p tcp --tcp-flags SYN SYN -m tcpmss --mss 1:500 -j DROP
+ sudo iptables -nL -v && sudo ip6tables -nL -v
+sleep 6
+echo;;
+
 esac
 done
 menu
