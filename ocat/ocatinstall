@@ -1,0 +1,22 @@
+echo "This script download, compile and install the onioncat." && echo "this action is irreversible." && echo "Press Enter to continue or q to quit."
+read enter
+if [ $enter=="q" ];
+then
+exit
+else
+echo "..."
+fi
+echo "Downloading onioncat.." && sleep 2
+sudo apt -y update && sudo apt -y install unzip && cd /home/$USER/
+wget https://github.com/rahra/onioncat/archive/refs/heads/master.zip && unzip master.zip && cd onioncat-master/
+echo "Onioncat Downloaded! now go install!" && sleep 2
+sudo sh /home/$USER/onioncat-master/autogen.sh
+./configure
+sudo make && sudo make install
+echo "You choose keep unzip or remove this lib? y/n" && read ksc
+if [ $ksc=="y" ];
+ then
+  echo""
+ else
+  sudo apt -y remove unzip && sudo apt -y purge unzip
+fi
