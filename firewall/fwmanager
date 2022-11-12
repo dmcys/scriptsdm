@@ -75,9 +75,9 @@ read a
 	  	 sudo iptables-save
 		echo;;
 		3)
-		 sed -i 's/-I/-D/g' ./.log/.ilog -i
-		 sudo sh ./.log/.ilog
-		 sudo rm -r ./.log/.ilog
+		 sed -i 's/-I/-D/g' .log/.ilog -i
+		 sudo sh .log/.ilog
+		 sudo rm -r .log/.ilog
 		echo;;
 	 esac
 	 done
@@ -104,19 +104,19 @@ read a
 		then
 		 destport="01:65535"
 		 cmd=sudo iptables -I OUTPUT -p $protocol -s $sourceip -d $externalip --dport $destport -j DROP
-	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .olog
+	  	 mkdir .log/ && echo $cmd >> .olog
 		else
 		 cmd=sudo iptables -I OUTPUT -p $protocol -s $sourceip -d $externalip --dport $destport -j DROP
-	  	 mkdir /home/$USER/.fwmanager/ && echo $cmd >> .olog
+	  	 mkdir .log/ && echo $cmd >> .olog
 		fi
 		echo;;
 		2)
 		 sudo iptables -P OUTPUT DROP && sudo iptables -I OUTPUT -j DROP
 		echo;;
 		3)
-		 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.olog -i
-		 sudo sh /home/$USER/.fwmanager/.olog
-		 sudo rm -r /home/$USER/.fwmanager/.olog
+		 sed -i 's/-I/-D/g' .log/.olog -i
+		 sudo sh .log/.olog
+		 sudo rm -r .log/.olog
 		echo;;
 	 esac
 	 done
@@ -125,8 +125,8 @@ read a
 
 	c)
 	 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.ilog -i && sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.olog -i
-	 sudo sh /home/$USER/.fwmanager/.ilog && sudo sh /home/$USER/.fwmanager/.olog
-	 sudo rm -r /home/$USER/.fwmanager/.ilog &&  sudo rm -r /home/$USER/.fwmanager/.olog
+	 sudo sh .log/.ilog && sudo sh .log/.olog
+	 sudo rm -r .log/.ilog &&  sudo rm -r .log/.olog
          echo;;
 
 	q)
