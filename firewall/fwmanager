@@ -124,7 +124,7 @@ read a
          echo;;
 
 	c)
-	 sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.ilog -i && sed -i 's/-I/-D/g' /home/$USER/.fwmanager/.olog -i
+	 sed -i 's/-I/-D/g' .log/.ilog -i && sed -i 's/-I/-D/g' .log/.olog -i
 	 sudo sh .log/.ilog && sudo sh .log/.olog
 	 sudo rm -r .log/.ilog &&  sudo rm -r .log/.olog
          echo;;
