@@ -1,0 +1,1 @@
+-- Recommended the use of Whonix or Kicksecure.
