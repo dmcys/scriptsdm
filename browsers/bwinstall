@@ -8,7 +8,7 @@ echo "Your choiced $a"
 if [ $a=="q" ]; then
 exit
 elif [ $a=="1" ]; then
-sudo mkdir /home/$USER/browser/ && wget https://cdn1.waterfox.net/waterfox/releases/latest/linux && tar -xf linux && cd waterfox
+sudo mkdir /home/$USER/browser/ && wget https://cdn1.waterfox.net/waterfox/releases/latest/linux && tar -xf linux && cd /home/$USER/browser/waterfox/
 echo "You accept open the browser now? | y/n"
 read acpb
 if [ $acp=="y"]; then
