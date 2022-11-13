@@ -1,14 +1,21 @@
 #!bin/sh
 clear
 echo "What browser your accept install?"
-echo "1) TOR Browser 2) Librewolf | 3) Brave | 4) Firefox"
+echo "1) Waterfox 2) Librewolf | 3) Brave | 4) Firefox"
 echo "q) Quit."
 read a
 echo "Your choiced $a"
 if [ $a=="q" ]; then
 exit
 elif [ $a=="1" ]; then
-echo "In next updates.."
+sudo mkdir /home/$USER/browser/ && wget https://cdn1.waterfox.net/waterfox/releases/latest/linux && tar -xf linux && cd waterfox
+echo "You accept open the browser now? | y/n"
+read acpb
+if [ $acp=="y"]; then
+ xfce4-terminal -x ./waterfox
+else
+ echo "Browser installed!" && sleep 3
+fi
 elif [ $a=="2" ]; then
 distro=$(if echo " bullseye focal impish jammy uma una vanessa" | grep -q " $(lsb_release -sc) "; then echo $(lsb_release -sc); else echo focal; fi)
 wget -O- https://deb.librewolf.net/keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/librewolf.gpg
