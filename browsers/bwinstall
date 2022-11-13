@@ -11,7 +11,7 @@ elif [ $a=="1" ]; then
 sudo mkdir /home/$USER/browser/ && wget https://cdn1.waterfox.net/waterfox/releases/latest/linux && tar -xf linux && cd /home/$USER/browser/waterfox/
 echo "You accept open the browser now? | y/n"
 read acpb
-if [ $acp=="y"]; then
+if [ $acpb=="y"]; then
  xfce4-terminal -x ./waterfox
 else
  echo "Browser installed!" && sleep 3
