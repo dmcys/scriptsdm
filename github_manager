@@ -1,88 +1,59 @@
 #!/bin/bash
 
-# Função para exibir o menu
-show_menu() {
-    echo "Selecione uma opção:"
-    echo "1 - Configurar token global"
-    echo "2 - Atualizar repositório"
-    echo "3 - Baixar repositório"
-    echo "4 - Criar repositório"
-    echo "5 - Sair"
-}
-
-# Função para configurar o token global
+# Função para configurar o token do GitHub
 configure_token() {
-    read -p "Digite o token: " token
+    read -p "Insira seu token do GitHub: " token
     git config --global github.token $token
     echo "Token configurado com sucesso!"
 }
 
-# Função para atualizar o repositório
-update_repo() {
-    read -p "Digite o nome do usuário: " user
-    read -p "Digite o nome do repositório: " repo
-    git clone "https://github.com/$user/$repo.git"
-    cd $repo
-    git pull origin master
-    echo "Repositório atualizado com sucesso!"
+# Função para enviar os arquivos do diretório atual para o repositório no GitHub
+send_files() {
+    read -p "Insira o nome do repositório: " repo_name
+    git init
+    git add .
+    git commit -m "Adicionando arquivos"
+    git remote add origin https://github.com/seu-usuario/$repo_name.git
+    git push -u origin master
+    echo "Arquivos enviados com sucesso!"
 }
 
-# Função para baixar o repositório
+# Função para baixar um repositório do GitHub usando a linha de comando
 download_repo() {
-    read -p "Digite o nome do usuário: " user
-    read -p "Digite o nome do repositório: " repo
-    git clone "https://github.com/$user/$repo.git"
+    read -p "Insira o nome do repositório: " repo_name
+    git clone https://github.com/seu-usuario/$repo_name.git
     echo "Repositório baixado com sucesso!"
 }
 
-# Função para criar um repositório
+# Função para criar um repositório e adicioná-lo à sua conta no GitHub
 create_repo() {
-    read -p "Digite o nome do repositório: " repo
-    read -p "Digite a descrição do repositório: " desc
-    read -p "O repositório será público? (s/n): " is_public
-
-    if [ "$is_public" = "s" ]; then
-        is_public=true
+    read -p "Insira o nome do repositório: " repo_name
+    read -p "Insira uma descrição para o repositório: " repo_description
+    read -p "Deseja tornar o repositório público? (S/N): " repo_visibility
+    if [ "$repo_visibility" = "S" ] || [ "$repo_visibility" = "s" ]; then
+        visibility="public"
     else
-        is_public=false
+        visibility="private"
     fi
-
-    # Cria o repositório na conta do usuário
-    curl -u "username:$token" https://api.github.com/user/repos -d '{"name":"'$repo'", "description":"'$desc'", "private":'$is_public'}'
-
-    # Adiciona o repositório como origin para o diretório atual
-    git remote add origin "https://github.com/username/$repo.git"
-
+    curl -u "seu-usuario" https://api.github.com/user/repos -d "{\"name\":\"$repo_name\", \"description\":\"$repo_description\", \"private\": $visibility}"
     echo "Repositório criado com sucesso!"
 }
 
-# Loop do menu
-while true
-do
-    show_menu
-    read choice
-
-    case $choice in
-        1)
-            configure_token
-            ;;
-        2)
-            update_repo
-            ;;
-        3)
-            download_repo
-            ;;
-        4)
-            create_repo
-            ;;
-        5)
-            echo "Saindo..."
-            exit 0
-            ;;
-        *)
-            echo "Opção inválida!"
-            ;;
+# Loop principal do menu
+while true; do
+    echo "MENU"
+    echo "1. Configurar token"
+    echo "2. Enviar arquivos para repositório"
+    echo "3. Baixar repositório"
+    echo "4. Criar repositório"
+    echo "5. Sair"
+    read -p "Selecione uma opção: " option
+    case $option in
+        1) configure_token;;
+        2) send_files;;
+        3) download_repo;;
+        4) create_repo;;
+        5) exit;;
+        *) echo "Opção inválida";;
     esac
-
-    echo ""
 done
