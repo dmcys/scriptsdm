@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# Função para exibir o menu
+show_menu() {
+    echo "Selecione uma opção:"
+    echo "1 - Configurar token global"
+    echo "2 - Atualizar repositório"
+    echo "3 - Baixar repositório"
+    echo "4 - Criar repositório"
+    echo "5 - Sair"
+}
+
+# Função para configurar o token global
+configure_token() {
+    read -p "Digite o token: " token
+    git config --global github.token $token
+    echo "Token configurado com sucesso!"
+}
+
+# Função para atualizar o repositório
+update_repo() {
+    read -p "Digite o nome do usuário: " user
+    read -p "Digite o nome do repositório: " repo
+    git clone "https://github.com/$user/$repo.git"
+    cd $repo
+    git pull origin master
+    echo "Repositório atualizado com sucesso!"
+}
+
+# Função para baixar o repositório
+download_repo() {
+    read -p "Digite o nome do usuário: " user
+    read -p "Digite o nome do repositório: " repo
+    git clone "https://github.com/$user/$repo.git"
+    echo "Repositório baixado com sucesso!"
+}
+
+# Função para criar um repositório
+create_repo() {
+    read -p "Digite o nome do repositório: " repo
+    read -p "Digite a descrição do repositório: " desc
+    read -p "O repositório será público? (s/n): " is_public
+
+    if [ "$is_public" = "s" ]; then
+        is_public=true
+    else
+        is_public=false
+    fi
+
+    # Cria o repositório na conta do usuário
+    curl -u "username:$token" https://api.github.com/user/repos -d '{"name":"'$repo'", "description":"'$desc'", "private":'$is_public'}'
+
+    # Adiciona o repositório como origin para o diretório atual
+    git remote add origin "https://github.com/username/$repo.git"
+
+    echo "Repositório criado com sucesso!"
+}
+
+# Loop do menu
+while true
+do
+    show_menu
+    read choice
+
+    case $choice in
+        1)
+            configure_token
+            ;;
+        2)
+            update_repo
+            ;;
+        3)
+            download_repo
+            ;;
+        4)
+            create_repo
+            ;;
+        5)
+            echo "Saindo..."
+            exit 0
+            ;;
+        *)
+            echo "Opção inválida!"
+            ;;
+    esac
+
+    echo ""
+done
