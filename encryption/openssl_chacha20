@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Generate a random 256-bit key
+KEY=$(openssl rand -hex 32)
+
+# Encrypt a message using ChaCha20
+function encrypt {
+  local MESSAGE="$1"
+  local NONCE=$(openssl rand -hex 12)
+  local CIPHERTEXT=$(echo "$MESSAGE" | openssl enc -e -chacha20 -base64 -K "$KEY" -iv "$NONCE")
+  echo "$NONCE:$CIPHERTEXT"
+}
+
+# Decrypt a message using ChaCha20
+function decrypt {
+  local CIPHERTEXT="$1"
+  local NONCE=$(echo "$CIPHERTEXT" | cut -d ':' -f 1)
+  local CIPHERTEXT=$(echo "$CIPHERTEXT" | cut -d ':' -f 2)
+  local MESSAGE=$(echo "$CIPHERTEXT" | openssl enc -d -chacha20 -base64 -K "$KEY" -iv "$NONCE")
+  echo "$MESSAGE"
+}
+
+# Example usage
+MESSAGE="This is a secret message"
+echo "Original message: $MESSAGE"
+CIPHERTEXT=$(encrypt "$MESSAGE")
+echo "Encrypted message: $CIPHERTEXT"
+MESSAGE=$(decrypt "$CIPHERTEXT")
+echo "Decrypted message: $MESSAGE"

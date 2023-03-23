@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Generate a random key
+openssl rand -out key.bin 32
+
+# Encrypt the file using the key and AES-256
+openssl enc -aes-256-cbc -salt -in plaintext.txt -out ciphertext.enc -pass file:key.bin
+
+# Decrypt the file using the key and AES-256
+openssl enc -aes-256-cbc -d -in ciphertext.enc -out decrypted.txt -pass file:key.bin
+
+# Securely delete the key
+shred -u key.bin

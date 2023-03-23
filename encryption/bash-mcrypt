@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Generate a random encryption key
+key=$(openssl rand -base64 32)
+
+# Encrypt a file using the encryption key
+mcrypt --key $key file.txt
+
+# Decrypt the encrypted file using the encryption key
+mcrypt --key $key -d file.txt.nc

@@ -1,0 +1,33 @@
+#!bin/bash
+echo -ne -n -e "This require there: NaCl (Networking and Cryptography library)\nlib: libsodium-dev, you decide install it? y/n";read anslib;
+if [ $anslib == "y" ]; then
+sudo apt-get install libsodium-dev
+echo -ne -n -e "Download and compile NaCl (Networking and Cryptography library)? y/n";read anslib;
+  if [ $anslib == "y" ]; then
+  wget https://hyperelliptic.org/nacl/nacl-20110221.tar.bz2
+  bunzip2 < nacl-20110221.tar.bz2 | tar -xf -
+  cd nacl-20110221
+  ./do
+  else
+   echo "";
+  fi
+else
+echo "";
+fi
+
+# Generate a random 32-byte key
+key=$(nacl random 32)
+
+# Generate a random 24-byte nonce
+nonce=$(nacl random 24)
+
+# Encrypt a file using Curve25519, Salsa20, and Poly1305
+nacl box myfile myfile.enc -k "$key" -n "$nonce"
+
+echo "you want decrypt it? y/n";read anslib;
+[[ $anslib == "y" ]]; then
+# Decrypt the file using the same key and nonce
+nacl box-open myfile.enc myfile.dec -k "$key" -n "$nonce"
+else
+echo "";
+fi

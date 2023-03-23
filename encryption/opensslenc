@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Encrypts a file using OpenSSL
+# Usage: encrypt.sh <input_file> <output_file> <password>
+
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <input_file> <output_file> <password>"
+    exit 1
+fi
+
+input_file=$1
+output_file=$2
+password=$3
+
+# Generate a random initialization vector (IV)
+iv=$(openssl rand -hex 16)
+
+# Encrypt the file using AES-256-CBC
+openssl enc -aes-256-cbc -in "$input_file" -out "$output_file" -pass "pass:$password" -iv "$iv"
+
+# Save the IV to a separate file
+echo "$iv" > "$output_file.iv"

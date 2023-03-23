@@ -1,0 +1,72 @@
+#!/usr/bin/env perl
+# cpan Crypt::CBC - requirements to use it
+
+use strict;
+use warnings;
+use feature qw/say/;
+use Crypt::CBC;
+
+# Set the key and initialization vector (IV)
+my $key = 'ThisIsMySecretKey1234567890';
+my $iv = '0123456789abcdef';
+
+# Define the encryption function
+sub encrypt_file {
+    my ($input_file, $output_file) = @_;
+
+    my $cipher = Crypt::CBC->new(
+        -key => $key,
+        -iv => $iv,
+        -cipher => 'AES',
+        -header => 'none',
+        -padding => 'standard'
+    );
+
+    open(my $in_fh, '<:raw', $input_file) or die "Cannot open $input_file for reading: $!";
+    open(my $out_fh, '>:raw', $output_file) or die "Cannot open $output_file for writing: $!";
+
+    $cipher->start_encrypt();
+    while (my $plaintext = <$in_fh>) {
+        print $out_fh $cipher->encrypt($plaintext);
+    }
+    print $out_fh $cipher->finish();
+
+    close($in_fh);
+    close($out_fh);
+}
+
+# Define the decryption function
+sub decrypt_file {
+    my ($input_file, $output_file) = @_;
+
+    my $cipher = Crypt::CBC->new(
+        -key => $key,
+        -iv => $iv,
+        -cipher => 'AES',
+        -header => 'none',
+        -padding => 'standard'
+    );
+
+    open(my $in_fh, '<:raw', $input_file) or die "Cannot open $input_file for reading: $!";
+    open(my $out_fh, '>:raw', $output_file) or die "Cannot open $output_file for writing: $!";
+
+    $cipher->start_decrypt();
+    while (my $ciphertext = <$in_fh>) {
+        print $out_fh $cipher->decrypt($ciphertext);
+    }
+    print $out_fh $cipher->finish();
+
+    close($in_fh);
+    close($out_fh);
+}
+
+# Test the encryption and decryption functions
+my $input_file = 'file.txt';
+my $encrypted_file = 'encrypted_file.bin';
+my $decrypted_file = 'decrypted_file.txt';
+
+encrypt_file($input_file, $encrypted_file);
+say "Encrypted file created: $encrypted_file";
+
+decrypt_file($encrypted_file, $decrypted_file);
+say "Decrypted file created: $decrypted_file";

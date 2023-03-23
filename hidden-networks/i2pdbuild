@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Update and upgrade packages
+sudo apt update && sudo apt upgrade
+
+# Install required dependencies
+sudo apt install -y build-essential cmake git libssl-dev zlib1g-dev
+
+# Clone i2pd repository
+git clone https://github.com/PurpleI2P/i2pd.git
+
+# Build i2pd
+cd i2pd
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+
+# Disable autostart on boot
+sudo systemctl disable i2pd
+
+echo "i2pd has been built successfully and autostart on boot has been disabled."

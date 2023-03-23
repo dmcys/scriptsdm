@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Prompt user for Whonix-Workstation or Qubes template
+read -p "Are you using Whonix-Workstation template or Qubes template? [y/n]: " whonix
+if [ $whonix = "y" ];
+then
+    scurl-download --tlsv1.2 https://geti2p.net/_static/i2p-archive-keyring.gpg
+else
+    scurl-download --proxy http://127.0.0.1:8082 --tlsv1.2 https://geti2p.net/_static/i2p-archive-keyring.gpg
+fi
+
+# Import i2p archive keyring
+gpg --keyid-format long --import --import-options show-only --with-fingerprint i2p-archive-keyring.gpg
+sudo cp i2p-archive-keyring.gpg /usr/share/keyrings/i2p-archive-keyring.gpg
+
+# Add i2p repository
+echo "deb [signed-by=/usr/share/keyrings/i2p-archive-keyring.gpg] tor+https://deb.i2p2.de/ bullseye main" | sudo tee /etc/apt/sources.list.d/i2p.list
+sudo apt update && sudo apt full-upgrade
+
+# Install i2p
+sudo apt install --no-install-recommends i2p i2p-keyring
+
+# Prompt user to enable autorun
+read -p "Do you want to enable autorun? [y/n]: " autorun
+if [ $autorun = "y" ];
+then
+    sudo dpkg-reconfigure i2p
+fi
+
+echo "webpanel: http://127.0.0.2:7657"
+
+echo "To start the service of i2p call for: sudo systemctl start i2p"
+
+# Prompt user to install anon-apps-config
+read -p "Do you want to install anon-apps-config to improve your privacy and security? [y/n]: " anon_apps
+if [ $anon_apps = "y" ];
+then
+    wget https://www.whonix.org/derivative.asc
+    sudo cp ~/derivative.asc /usr/share/keyrings/derivative.asc
+    echo "deb [signed-by=/usr/share/keyrings/derivative.asc] https://deb.whonix.org bullseye main contrib non-free" | sudo tee /etc/apt/sources.list.d/derivative.list
+    sudo apt-get update
+    sudo apt-get install anon-apps-config
+fi

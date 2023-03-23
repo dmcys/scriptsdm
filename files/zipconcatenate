@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Concatenate the zip file fragments into a single file
+cat fragment1.zip fragment2.zip fragment3.zip > full.zip
+
+# Try to extract the contents of the zip file
+unzip full.zip
+
+# If the zip file is partially corrupted, extract as much as possible
+if [ $? -ne 0 ]
+then
+    echo "Zip file is partially corrupted. Extracting what we can."
+    unzip -FF full.zip --out recovered.zip
+fi

@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+# cpan Crypt::CBC - requirement to use it
+
+use strict;
+use warnings;
+use Crypt::CBC;
+
+my $key = 'secret_key';
+my $iv = 'initialization_vector';
+my $plaintext = 'Hello, world!';
+
+# Create the AES cipher object
+my $cipher = Crypt::CBC->new(
+    -key    => $key,
+    -iv     => $iv,
+    -cipher => 'AES',
+    -header => 'none',
+);
+
+# Pad the plaintext to a multiple of the block size
+my $padded_plaintext = $cipher->padding()->pad($plaintext);
+
+# Encrypt the padded plaintext
+my $ciphertext = $cipher->encrypt($padded_plaintext);
+
+# Encode the ciphertext as base64
+my $encoded_ciphertext = encode_base64($ciphertext);
+
+print "Encoded ciphertext: $encoded_ciphertext\n";
+
+# Decode the ciphertext from base64
+$ciphertext = decode_base64($encoded_ciphertext);
+
+# Decrypt the ciphertext
+my $decryptedtext = $cipher->decrypt($ciphertext);
+
+# Unpad the decrypted plaintext
+my $unpadded_decryptedtext = $cipher->padding()->unpad($decryptedtext);
+
+print "Decrypted plaintext: $unpadded_decryptedtext\n";

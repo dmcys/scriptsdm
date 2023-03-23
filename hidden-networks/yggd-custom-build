@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Install Go
+sudo apt-get update
+sudo apt-get install -y golang
+
+# Clone the Yggdrasil repository
+git clone https://github.com/yggdrasil-network/yggdrasil-go.git
+
+# Build Yggdrasil
+cd yggdrasil-go
+./build
+
+# Get latest peer list from publicpeers.neilalexander.dev
+echo "Fetching the latest Yggdrasil peer list from publicpeers.neilalexander.dev..."
+PEERLIST=$(curl -s https://publicpeers.neilalexander.dev/)
+echo "Done!"
+
+# Prompt the user to choose which peers to use
+echo "Please choose which peers you would like to use:"
+echo "$PEERLIST" | nl -n ln -s ': '
+read CHOICE
+
+# Extract the chosen peers from the list
+PEERS=$(echo "$PEERLIST" | sed -n "${CHOICE}p")
+
+# Generate configuration file
+cd ..
+cat > yggdrasil.conf << EOF
+{
+    "Peers": [
+        $PEERS
+    ],
+    "Listen": [
+        ":9001"
+    ],
+    "InterfaceBlacklist": [
+        "lo"
+    ]
+}
+EOF
+
+# Advertise prefix and route using radvd
+sudo sysctl -w net.ipv6.conf.all.forwarding=1
+
+sudo ip addr add 300:1111:2222:3333::1/64 dev eth0
+
+cat > /etc/radvd.conf << EOF
+interface eth0
+{
+     AdvSendAdvert on;
+     prefix 300:1111:2222:3333::/64 {
+         AdvOnLink on;
+         AdvAutonomous on;
+     };
+     route 200::/7 {};
+};
+EOF
+
+sudo systemctl restart radvd
+
+# Prompt the user for next steps
+echo "The Yggdrasil configuration file has been generated successfully."
+echo "You may now start Yggdrasil by running './yggdrasil-go/yggdrasil'."
+echo "You may also want to add more peers to your configuration file in yggdrasil.conf."
+echo "Do you want to start Yggdrasil now? (y/n)"
+read START
+
+if [ "$START" = "y" ]; then
+    ./yggdrasil-go/yggdrasil
+fi

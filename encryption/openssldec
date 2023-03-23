@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Decrypts a file using OpenSSL
+# Usage: decrypt.sh <input_file> <output_file> <password> <iv_file>
+
+if [ $# -ne 4 ]; then
+    echo "Usage: $0 <input_file> <output_file> <password> <iv_file>"
+    exit 1
+fi
+
+input_file=$1
+output_file=$2
+password=$3
+iv_file=$4
+
+# Read the initialization vector (IV) from the file
+iv=$(cat "$iv_file")
+
+# Decrypt the file using AES-256-CBC
+openssl enc -d -aes-256-cbc -in "$input_file" -out "$output_file" -pass "pass:$password" -iv "$iv"

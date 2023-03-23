@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Install Go
+sudo apt-get update
+sudo apt-get install -y golang radvd
+
+# Clone the Yggdrasil repository
+git clone https://github.com/yggdrasil-network/yggdrasil-go.git
+
+# Build Yggdrasil
+cd yggdrasil-go
+./build
+
+# Generate configuration file
+cd ..
+cat > yggdrasil.conf << EOF
+{
+    "Peers": [
+        {
+            "EncPublicKey": "4vJbwxnWf+GlyQJtyu/Tpxb2v2T9JWmH+OJcKjY7vF8=",
+            "IPv6": "2001:67c:20a1:1096:f0a6:bee4:b7e4:afe1",
+            "AllowedIPs": [
+                "::/0"
+            ],
+            "Endpoint": "tcp://46.254.16.77:53535"
+        },
+        {
+            "EncPublicKey": "flnKZddtHAlxGgzTr3qizQ07w8yjKMcSKrbHnvF1Jd8=",
+            "IPv6": "2001:470:3:982::2",
+            "AllowedIPs": [
+                "::/0"
+            ],
+            "Endpoint": "tcp://y.nikhef.nl:443"
+        }
+    ],
+    "Listen": [
+        ":9001"
+    ],
+    "InterfaceBlacklist": [
+        "lo"
+    ]
+}
+EOF
+
+# Advertise prefix and route using radvd
+sudo sysctl -w net.ipv6.conf.all.forwarding=1
+
+sudo ip addr add 300:1111:2222:3333::1/64 dev eth0
+
+cat > /etc/radvd.conf << EOF
+interface eth0
+{
+     AdvSendAdvert on;
+     prefix 300:1111:2222:3333::/64 {
+         AdvOnLink on;
+         AdvAutonomous on;
+     };
+     route 200::/7 {};
+};
+EOF
+
+sudo systemctl restart radvd

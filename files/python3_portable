@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Create the virtual environment
+python3 -m venv myenv
+source myenv/bin/activate
+
+# Install the required packages
+pip install pycryptodome
+
+# Copy the script into the virtual environment
+cp myscript.py myenv/
+
+# Deactivate the virtual environment
+deactivate
+
+# Zip the virtual environment and script into a single file
+zip -r myscript.zip myenv myscript.py
+
+# opening the env portable in other system or date.
+unzip myscript.zip
+cd myscript
+source myenv/bin/activate
+python3 myscript.py
