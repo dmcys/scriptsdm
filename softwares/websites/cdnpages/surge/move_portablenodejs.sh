@@ -15,9 +15,10 @@ sudo mv "$CURRENT_PATH" "$NEW_PATH"
 # Update the PATH environment variable
 export PATH="$NEW_PATH/bin:$PATH"
 
-# Update the symbolic links for npm and npx
+# Update the symbolic links for npm and npx and surge
 sudo ln "$NEW_PATH/node_modules/bin/npm" /usr/bin/npm
 sudo ln "$NEW_PATH/node_modules/bin/npx" /usr/bin/npx
+sudo ln -s "$NEW_PATH/node_modules/bin/surge" /usr/bin/surge
 
 # Update the symbolic link for node
 sudo ln "$NEW_PATH/nodejs/bin/node" /usr/bin/node
