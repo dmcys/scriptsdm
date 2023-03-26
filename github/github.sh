@@ -6,15 +6,13 @@ CONFIG_FILE=~/.git-manager.conf
 clone_repo() {
     echo "Digite a URL do repositório que deseja clonar:"
     read url
-    echo "Digite o nome da pasta onde deseja clonar o repositório:"
-    read folder
     echo "Digite o nome da branch que deseja clonar (pressione enter para usar a branch padrão):"
     read branch
     if [ -z "$branch" ]
     then
-        git clone $url $folder
+        git clone $url
     else
-        git clone -b $branch $url $folder
+        git clone -b $branch $url
     fi
     echo "Repositório clonado com sucesso!"
 }
