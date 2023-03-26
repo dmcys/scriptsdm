@@ -14,9 +14,9 @@ curl -sL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x
 export PATH="$(pwd)/nodejs/bin:$PATH"
 
 # Create a symbolic link for npm and npx in the project directory
-sudo ln -s "$(pwd)/node_modules/bin/npm" /usr/local/bin/npm
-sudo ln -s "$(pwd)/node_modules/bin/npx" /usr/local/bin/npx
-sudo ln -s "$(pwd)/nodejs/bin/node" /usr/local/bin/node
+sudo ln -s "$(pwd)/node_modules/bin/npm" /usr/bin/npm
+sudo ln -s "$(pwd)/node_modules/bin/npx" /usr/bin/npx
+sudo ln -s "$(pwd)/nodejs/bin/node" /usr/bin/node
 
 #Create the reference of node-portable path on /usr/bin
 sudo echo -ne -n -e "${pwd}/" > /usr/bin/node.ref
