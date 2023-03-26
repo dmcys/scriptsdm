@@ -16,8 +16,8 @@ sudo mv "$CURRENT_PATH" "$NEW_PATH"
 export PATH="$NEW_PATH/bin:$PATH"
 
 # Update the symbolic links for npm and npx
-sudo ln "$NEW_PATH/node_modules/bin/npm" /usr/local/bin/npm
-sudo ln "$NEW_PATH/node_modules/bin/npx" /usr/local/bin/npx
+sudo ln "$NEW_PATH/node_modules/bin/npm" /usr/bin/npm
+sudo ln "$NEW_PATH/node_modules/bin/npx" /usr/bin/npx
 
 # Update the symbolic link for node
 sudo ln "$NEW_PATH/nodejs/bin/node" /usr/bin/node
