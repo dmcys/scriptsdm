@@ -46,7 +46,22 @@ function create_folder() {
 function run_surge() {
   project_path=$1
   cd "$project_path"
-  surge
+  sudo ln -s "$(pwd)/node_modules/bin/surge" /usr/local/bin/surge
+# Get the name of the user's terminal emulator
+  TERMINAL_EMULATOR=$(basename "$SHELL")
+# Open a new shell with bash -u and execute the npm installation in the new shell
+case "$TERMINAL_EMULATOR" in
+"gnome-terminal"|"tilix"|"xfce4-terminal"|"konsole"|"terminator"|"mate-terminal")
+"$TERMINAL_EMULATOR" -- bash -c 'surge'
+;;
+"xterm"|"rxvt"|"urxvt"|"st"|"sakura"|"eterm"|"lilyterm"|"terminology"|"terminix"|"cool-retro-term"|"deepin-terminal"|"tilda")
+"$TERMINAL_EMULATOR" -e bash -c 'surge'
+;;
+*)
+echo "Unable to open a new terminal. Please open a new terminal manually and run the following command:"
+echo "surge"
+;;
+esac
 }
 
 # Check if npm is installed
