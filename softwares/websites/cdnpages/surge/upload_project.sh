@@ -53,7 +53,7 @@ function configure_project() {
   npm install -g surge
 
   # Configura o projeto no surge.sh e faz o upload
-  surge --domain $domain_name
+  surge --domain $domain_name --port 443
 }
 
 # Menu principal
