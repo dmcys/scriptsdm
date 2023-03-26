@@ -20,7 +20,7 @@ sudo ln "$NEW_PATH/node_modules/bin/npm" /usr/local/bin/npm
 sudo ln "$NEW_PATH/node_modules/bin/npx" /usr/local/bin/npx
 
 # Update the symbolic link for node
-sudo ln "$NEW_PATH/bin/node" /usr/local/bin/node
+sudo ln "$NEW_PATH/nodejs/bin/node" /usr/bin/node
 
 # Update the reference file for node-portable
 sudo echo -ne -n -e "$NEW_PATH/\n" > /usr/bin/node.ref
