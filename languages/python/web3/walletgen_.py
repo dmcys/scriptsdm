@@ -16,8 +16,6 @@ with open("wallets.txt", "w") as file:
 # Print both keys to the console
 #        print("Private key:", private_key)
 #        print("Public key:", public_key)
-        file.write(f"Wallet {i}\n")
-        file.write("Private key:\n")
-        file.write(f"{private_key}\n")
-        file.write("Public key:\n")
-        file.write(f"{public_key}\n\n")
+         file.write(f"Wallet {i}\n")
+         file.write(f"Private key:{private_key}")
+         file.write(f"Public key:{public_key}")
