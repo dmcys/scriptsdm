@@ -18,6 +18,9 @@ sudo ln -s "$(pwd)/node_modules/bin/npm" /usr/local/bin/npm
 sudo ln -s "$(pwd)/node_modules/bin/npx" /usr/local/bin/npx
 sudo ln -s "$(pwd)/nodejs/bin/node" /usr/local/bin/node
 
+#Create the reference of node-portable path on /usr/bin
+sudo echo -ne -n -e "${pwd}/" > /usr/bin/node.ref
+
 # Get the name of the user's terminal emulator
 TERMINAL_EMULATOR=$(basename "$SHELL")
 
