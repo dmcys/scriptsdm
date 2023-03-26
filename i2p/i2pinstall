@@ -1,28 +1,92 @@
-clear
-echo "This script install i2p with the correctly form." && echo "following the original tutorial in the i2p website." && echo "Press Enter to continue or q to quit"
-read enter
-if [ $enter=="q" ];
-then
-exit
-else
-echo "Downloading i2p.."
-fi
-sudo apt -y install apt-transport-https lsb-release curl
-echo "Inserting i2p repo." && sleep 2
-echo "deb [signed-by=/usr/share/keyrings/i2p-archive-keyring.gpg] https://deb.i2p2.de/ $(lsb_release -sc) main" \ | sudo tee /etc/apt/sources.list.d/i2p.list
-echo "Downloading the GPG Key of i2p." && sleep 2
-curl -o /home/$USER/i2p-archive-keyring.gpg https://geti2p.net/_static/i2p-archive-keyring.gpg
-gpg --keyid-format long --import --import-options show-only --with-fingerprint /home/$USER/i2p-archive-keyring.gpg
-sudo cp /home/$USER/i2p-archive-keyring.gpg /usr/share/keyrings
-sudo ln -sf /usr/share/keyrings/i2p-archive-keyring.gpg /etc/apt/trusted.gpg.d/i2p-archive-keyring.gpg
-sudo apt -y update
-sudo apt -y install i2p i2p-keyring
-echo "i2p has installed! start now? y/n"
- read startnow
- if [ $startnow=="y" ];
-  then
-   i2prouter start
+#!/bin/bash
+
+# Function to install i2p
+install_i2p() {
+  clear
+  echo "This script installs i2p with the correct steps following the official tutorial."
+  echo "Press Enter to continue or q to quit"
+  read enter
+  if [ $enter == "q" ]; then
+    exit
   else
-   echo "Ok"
- fi
-exit;;
+    echo "Downloading i2p.."
+  fi
+  
+  sudo apt -y install apt-transport-https lsb-release curl
+  echo "Inserting i2p repo." && sleep 2
+  echo "deb [signed-by=/usr/share/keyrings/i2p-archive-keyring.gpg] https://deb.i2p2.de/ $(lsb_release -sc) main" \ | sudo tee /etc/apt/sources.list.d/i2p.list
+  echo "Downloading the GPG Key of i2p." && sleep 2
+  curl -o /home/$USER/i2p-archive-keyring.gpg https://geti2p.net/_static/i2p-archive-keyring.gpg
+  gpg --keyid-format long --import --import-options show-only --with-fingerprint /home/$USER/i2p-archive-keyring.gpg
+  sudo cp /home/$USER/i2p-archive-keyring.gpg /usr/share/keyrings
+  sudo ln -sf /usr/share/keyrings/i2p-archive-keyring.gpg /etc/apt/trusted.gpg.d/i2p-archive-keyring.gpg
+  sudo apt -y update
+  sudo apt -y install i2p i2p-keyring
+  echo "i2p has been installed! Start now? y/n"
+  read startnow
+  if [ $startnow == "y" ]; then
+    i2prouter start
+  else
+    echo "Ok"
+  fi
+}
+
+# Function to remove i2p
+remove_i2p() {
+  clear
+  echo "This script removes i2p from the system."
+  echo "Press Enter to continue or q to quit"
+  read enter
+  if [ $enter == "q" ]; then
+    exit
+  else
+    echo "Removing i2p.."
+  fi
+  
+  sudo apt -y remove i2p i2p-keyring
+  sudo rm /etc/apt/sources.list.d/i2p.list
+  sudo rm /usr/share/keyrings/i2p-archive-keyring.gpg
+  sudo apt -y update
+  echo "i2p has been removed from the system."
+}
+
+# Function to update i2p
+update_i2p() {
+  clear
+  echo "This script updates i2p to the latest version using the same installation steps."
+  echo "Press Enter to continue or q to quit"
+  read enter
+  if [ $enter == "q" ]; then
+    exit
+  else
+    echo "Updating i2p.."
+  fi
+  
+  # Remove i2p first
+  remove_i2p
+  
+  # Re-install i2p
+  install_i2p
+}
+
+# Function to display the main menu
+main_menu() {
+  clear
+  echo "============================="
+  echo "  WELCOME TO I2P MANAGER "
+  echo "============================="
+  echo "1. Install i2p"
+  echo "2. Update i2p"
+  echo "3. Remove i2p"
+  echo "4. Quit"
+  echo "4. Exit"
+
+  read -p "Enter your choice: " choice
+  case $choice in
+    1) install_i2p;;
+    2) update_i2p;;
+    3) remove_i2p;;
+    4) exit ;;
+    *) echo "Invalid choice. Please try again." && sleep 2 && main_menu ;;
+  esac
+}    
