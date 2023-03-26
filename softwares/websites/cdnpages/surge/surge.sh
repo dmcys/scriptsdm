@@ -10,19 +10,9 @@ create_project() {
   mkdir "$project_name"
   cd "$project_name"
   touch index.html style.css script.js
-  echo "<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	<link rel='stylesheet' type='text/css' href='style.css'>
-	<script type='text/javascript' src='script.js'></script>
-</head>
-<body>
-
-</body>
-</html>" > index.html
-  echo "/* Add your CSS code here */" > style.css
-  echo "// Add your JavaScript code here" > script.js
+  echo -ne -n -e "<!DOCTYPE html>\n<html>\n<head>\n<title></title>\n<link rel='stylesheet' type='text/css' href='style.css'>\n<script type='text/javascript' src='script.js'></script>\n</head>\n<body>\n</body>\n</html>" > index.html
+  echo -ne -n -e "/* Add your CSS code here */" > style.css
+  echo -ne -n -e "// Add your JavaScript code here" > script.js
   echo "Project created successfully."
   sleep 2
   main_menu
