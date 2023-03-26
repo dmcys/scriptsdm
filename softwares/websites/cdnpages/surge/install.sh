@@ -46,7 +46,8 @@ function create_folder() {
 function run_surge() {
   project_path=$1
   cd "$project_path"
-  sudo ln -s "$(pwd)/node_modules/bin/surge" /usr/local/bin/surge
+  noderef=$(cat /usr/bin/node.ref)
+  sudo ln -s "$(noderef)/node_modules/bin/surge" /usr/local/bin/surge
 # Get the name of the user's terminal emulator
   TERMINAL_EMULATOR=$(basename "$SHELL")
 # Open a new shell with bash -u and execute the npm installation in the new shell
