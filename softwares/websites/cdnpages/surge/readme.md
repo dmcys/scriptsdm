@@ -1,0 +1,10 @@
+To remove the nodejs portable is only remove the folders nodejs/node_modules and the references.
+to the projects created with portable version is only remove the project folder same
+run this command directly from dir of nodejs portable installation
+
+sudo rm /usr/local/bin/node
+sudo rm /usr/local/bin/npm
+sudo rm /usr/local/bin/npx
+sudo rm /usr/bin/node.ref
+sudo rm -rf nodejs
+sudo rm -rf node_modules
