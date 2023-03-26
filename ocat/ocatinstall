@@ -1,22 +1,70 @@
-echo "This script download, compile and install the onioncat." && echo "this action is irreversible." && echo "Press Enter to continue or q to quit."
-read enter
-if [ $enter=="q" ];
-then
-exit
-else
-echo "..."
-fi
-echo "Downloading onioncat.." && sleep 2
-sudo apt -y update && sudo apt -y install unzip && cd /home/$USER/
-wget https://github.com/rahra/onioncat/archive/refs/heads/master.zip && unzip master.zip && cd onioncat-master/
-echo "Onioncat Downloaded! now go install!" && sleep 2
-sudo sh /home/$USER/onioncat-master/autogen.sh
-./configure
-sudo make && sudo make install
-echo "You choose keep unzip or remove this lib? y/n" && read ksc
-if [ $ksc=="y" ];
- then
-  echo""
- else
-  sudo apt -y remove unzip && sudo apt -y purge unzip
-fi
+# Function to install OnionCat
+install_onioncat() {
+  echo "This script downloads, compiles and installs OnionCat."
+  echo "This action is irreversible."
+  read -p "Press Enter to continue or q to quit." enter
+  if [ "$enter" = "q" ]; then
+    return
+  fi
+  echo "Downloading OnionCat..." && sleep 2
+  sudo apt -y update && sudo apt -y install unzip && cd /home/$USER/
+  wget https://github.com/rahra/onioncat/archive/refs/heads/master.zip && unzip master.zip && cd onioncat-master/
+  echo "OnionCat downloaded! Now go install!" && sleep 2
+  sudo sh /home/$USER/onioncat-master/autogen.sh
+  ./configure
+  sudo make && sudo make install
+  echo "OnionCat installed successfully." && sleep 2
+  main_menu
+}
+
+# Function to update OnionCat
+update_onioncat() {
+  revert_onioncat_installation
+  install_onioncat
+}
+
+# Function to remove OnionCat
+remove_onioncat() {
+  revert_onioncat_installation
+  echo "OnionCat removed successfully." && sleep 2
+  main_menu
+}
+
+# Function to revert OnionCat installation
+revert_onioncat_installation() {
+  echo "This action will revert OnionCat installation to the previous version."
+  echo "This action is irreversible."
+  read -p "Press Enter to continue or q to quit." enter
+  if [ "$enter" = "q" ]; then
+    return
+  fi
+  echo "Reverting OnionCat installation..." && sleep 2
+  sudo make uninstall
+  sudo rm /usr/local/sbin/onioncat
+  sudo rm /usr/local/bin/onioncat
+  echo "OnionCat installation reverted successfully." && sleep 2
+}
+
+# Function to display the main menu
+main_menu() {
+  clear
+  echo "============================="
+  echo "  WELCOME TO ONIONCAT MANAGER "
+  echo "============================="
+  echo "1. Install OnionCat"
+  echo "2. Update OnionCat"
+  echo "3. Remove OnionCat"
+  echo "4. Exit"
+
+  read -p "Enter your choice: " choice
+  case $choice in
+    1) install_onioncat ;;
+    2) update_onioncat ;;
+    3) remove_onioncat ;;
+    4) exit ;;
+    *) echo "Invalid choice. Please try again." && sleep 2 && main_menu ;;
+  esac
+}
+
+# Start the program
+main_menu
