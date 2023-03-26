@@ -16,11 +16,11 @@ sudo mv "$CURRENT_PATH" "$NEW_PATH"
 export PATH="$NEW_PATH/bin:$PATH"
 
 # Update the symbolic links for npm and npx
-sudo ln -sf "$NEW_PATH/node_modules/bin/npm" /usr/local/bin/npm
-sudo ln -sf "$NEW_PATH/node_modules/bin/npx" /usr/local/bin/npx
+sudo ln "$NEW_PATH/node_modules/bin/npm" /usr/local/bin/npm
+sudo ln "$NEW_PATH/node_modules/bin/npx" /usr/local/bin/npx
 
 # Update the symbolic link for node
-sudo ln -sf "$NEW_PATH/bin/node" /usr/local/bin/node
+sudo ln "$NEW_PATH/bin/node" /usr/local/bin/node
 
 # Update the reference file for node-portable
 sudo echo -ne -n -e "$NEW_PATH/\n" > /usr/bin/node.ref
