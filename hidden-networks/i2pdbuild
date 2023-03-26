@@ -1,21 +1,68 @@
 #!/bin/bash
 
-# Update and upgrade packages
-sudo apt update && sudo apt upgrade
+# Function to install i2pd
+function install_i2pd {
+    # Update and upgrade packages
+    sudo apt update && sudo apt upgrade
+    
+    # Install required dependencies
+    sudo apt install -y build-essential cmake git libssl-dev zlib1g-dev
+    
+    # Clone i2pd repository
+    git clone https://github.com/PurpleI2P/i2pd.git
+    
+    # Build i2pd
+    cd i2pd
+    mkdir build && cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    make -j$(nproc)
+    
+    # Disable autostart on boot
+    sudo systemctl disable i2pd
+    
+    echo "i2pd has been built successfully and autostart on boot has been disabled."
+}
 
-# Install required dependencies
-sudo apt install -y build-essential cmake git libssl-dev zlib1g-dev
+# Function to uninstall i2pd
+function uninstall_i2pd {
+    revert_i2pd_build
+}
 
-# Clone i2pd repository
-git clone https://github.com/PurpleI2P/i2pd.git
-
-# Build i2pd
-cd i2pd
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j$(nproc)
-
-# Disable autostart on boot
-sudo systemctl disable i2pd
-
-echo "i2pd has been built successfully and autostart on boot has been disabled."
+# Main menu
+while true; do
+    clear
+    echo "==============================="
+    echo "         I2Pd Manager          "
+    echo "==============================="
+    echo "1. Install i2pd"
+    echo "2. Uninstall i2pd"
+    echo "3. Quit"
+    read -p "Enter your choice: " choice
+    
+    case $choice in
+        1)
+            echo "This will install i2pd on your system. Proceed? (y/n)"
+            read -r confirm
+            if [[ $confirm =~ ^[Yy]$ ]]; then
+                install_i2pd
+                read -p "Press enter to continue..."
+            fi
+            ;;
+        2)
+            echo "This will uninstall i2pd from your system. Proceed? (y/n)"
+            read -r confirm
+            if [[ $confirm =~ ^[Yy]$ ]]; then
+                uninstall_i2pd
+                read -p "Press enter to continue..."
+            fi
+            ;;
+        3)
+            echo "Quitting..."
+            exit
+            ;;
+        *)
+            echo "Invalid choice. Please try again."
+            read -p "Press enter to continue..."
+            ;;
+    esac
+done
