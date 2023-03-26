@@ -47,7 +47,7 @@ function run_surge() {
   project_path=$1
   cd "$project_path"
   noderef=$(cat /usr/bin/node.ref)
-  sudo ln "$(node.ref)/node_modules/bin/surge" /usr/bin/surge
+  sudo ln "${noderef}/node_modules/bin/surge" /usr/bin/surge
 # Get the name of the user's terminal emulator
   TERMINAL_EMULATOR=$(basename "$SHELL")
 # Open a new shell with bash -u and execute the npm installation in the new shell
