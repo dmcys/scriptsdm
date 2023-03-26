@@ -35,8 +35,8 @@ function ipfs_menu() {
     echo ""
     case $choice in
         1)
-            open_ipfs_ports
             read -p "Enter the name of the repository: " repo_name
+            open_ipfs_ports
             ipfs init "$repo_name"
             echo "Repository $repo_name has been created."
             echo ""
@@ -44,24 +44,24 @@ function ipfs_menu() {
             ipfs_menu
             ;;
         2)
-            open_ipfs_ports
             read -p "Enter the file path to add to IPFS: " file_path
+            open_ipfs_ports
             ipfs add "$file_path"
             echo ""
             close_ipfs_ports
             ipfs_menu
             ;;
         3)
-            open_ipfs_ports
             read -p "Enter the file path to upload to IPFS: " file_path
+            open_ipfs_ports
             ipfs add "$file_path" --pin=true
             echo ""
             close_ipfs_ports
             ipfs_menu
             ;;
         4)
-            open_ipfs_ports
             read -p "Enter the CID of the pinned file you want to remove: " cid
+            open_ipfs_ports
             ipfs pin rm "$cid"
             echo ""
             close_ipfs_ports
