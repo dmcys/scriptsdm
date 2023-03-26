@@ -1,92 +1,31 @@
 #!/bin/bash
 
-# Function to display the main menu
-main_menu() {
-  clear
-  echo "===================================="
-  echo "  WELCOME TO PROJECT EDITOR SCRIPT  "
-  echo "===================================="
-  echo "1. Create new project"
-  echo "2. Edit existing project"
-  echo "3. Remove existing project"
-  echo "4. Exit"
-  echo "------------------------------------"
-  read -p "Enter your choice [1-4]: " choice
-  case $choice in
-    1)
-      create_project
-      ;;
-    2)
-      edit_project_menu
-      ;;
-    3)
-      remove_project
-      ;;
-    4)
-      exit 0
-      ;;
-    *)
-      echo "Invalid choice. Please enter a number between 1 and 4."
-      sleep 2
-      main_menu
-      ;;
-  esac
-}
-
-# Function to create new project
+# Function to create a new project
 create_project() {
-  read -p "Enter the project name: " project_name
+  clear
+  echo "============================="
+  echo "  WELCOME TO PROJECT CREATOR  "
+  echo "============================="
+  read -p "Enter project name: " project_name
   mkdir "$project_name"
   cd "$project_name"
-  mkdir css js img
-  touch index.html css/style.css js/script.js
-  echo "<!DOCTYPE html>" > index.html
-  echo "<html>" >> index.html
-  echo "<head>" >> index.html
-  echo "  <title>$project_name</title>" >> index.html
-  echo '  <link rel="stylesheet" type="text/css" href="css/style.css">' >> index.html
-  echo "</head>" >> index.html
-  echo "<body>" >> index.html
-  echo "  <h1>Welcome to $project_name</h1>" >> index.html
-  echo '  <script type="text/javascript" src="js/script.js"></script>' >> index.html
-  echo "</body>" >> index.html
-  echo "</html>" >> index.html
+  touch index.html style.css script.js
+  echo "<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel='stylesheet' type='text/css' href='style.css'>
+	<script type='text/javascript' src='script.js'></script>
+</head>
+<body>
+
+</body>
+</html>" > index.html
+  echo "/* Add your CSS code here */" > style.css
+  echo "// Add your JavaScript code here" > script.js
   echo "Project created successfully."
   sleep 2
   main_menu
-}
-
-# Function to display the edit project menu
-edit_project_menu() {
-  clear
-  echo "==================================="
-  echo "  WELCOME TO PROJECT EDITOR MENU  "
-  echo "==================================="
-  echo "1. Edit HTML files"
-  echo "2. Edit CSS files"
-  echo "3. Edit JavaScript files"
-  echo "4. Main Menu"
-  echo "-----------------------------------"
-  read -p "Enter your choice [1-4]: " choice
-  case $choice in
-    1)
-      edit_html_files
-      ;;
-    2)
-      edit_css_files
-      ;;
-    3)
-      edit_js_files
-      ;;
-    4)
-      main_menu
-      ;;
-    *)
-      echo "Invalid choice. Please enter a number between 1 and 4."
-      sleep 2
-      edit_project_menu
-      ;;
-  esac
 }
 
 # Function to edit HTML files
@@ -113,107 +52,80 @@ edit_css_files() {
   clear
   echo "============================="
   echo "  WELCOME TO CSS EDITOR  "
-#Function to edit CSS files
-edit_css_files() {
-clear
-echo "============================="
-echo " WELCOME TO CSS EDITOR "
-echo "============================="
-echo ""
-echo "Please enter the name of the CSS file you want to edit (including the extension):"
-read css_file
-#Check if file exists
-if [ ! -f "$project_dir/css/$css_file" ]; then
-echo "$css_file does not exist in the project directory."
-sleep 2
-edit_project_menu
-fi
-#Open file in editor
-$editor $project_dir/css/$css_file
-#Prompt user to save changes
-echo "Do you want to save changes to $css_file? (y/n)"
-read save_changes
-
-if [ $save_changes == "y" ]; then
-# Upload file to Surge
-surge_up $project_dir
-echo ""
-echo "CSS file saved and uploaded to Surge successfully!"
-sleep 2
-else
-echo "Changes to $css_file were not saved."
-sleep 2
-fi
-
-edit_project_menu
+  echo "============================="
+  read -p "Enter the file name to edit: " file_name
+  if [ ! -f "$file_name" ]; then
+    echo "File does not exist."
+    sleep 2
+    edit_project_menu
+  else
+    vi "$file_name"
+    echo "File saved successfully."
+    sleep 2
+    edit_project_menu
+  fi
 }
-#Function to edit JavaScript files
+
+# Function to edit JavaScript files
 edit_js_files() {
-clear
-echo "============================="
-echo " WELCOME TO JS EDITOR "
-echo "============================="
-echo ""
-echo "Please enter the name of the JS file you want to edit (including the extension):"
-read js_file
-#Check if file exists
-if [ ! -f "$project_dir/js/$js_file" ]; then
-echo "$js_file does not exist in the project directory."
-sleep 2
-edit_project_menu
-fi
-#Open file in editor
-$editor $project_dir/js/$js_file
-#Prompt user to save changes
-echo "Do you want to save changes to $js_file? (y/n)"
-read save_changes
-
-if [ $save_changes == "y" ]; then
-# Upload file to Surge
-surge_up $project_dir
-echo ""
-echo "JS file saved and uploaded to Surge successfully!"
-sleep 2
-
-else
-echo "Changes to $js_file were not saved."
-sleep 2
-fi
-
-edit_project_menu
+  clear
+  echo "============================="
+  echo "  WELCOME TO JAVASCRIPT EDITOR  "
+  echo "============================="
+  read -p "Enter the file name to edit: " file_name
+  if [ ! -f "$file_name" ]; then
+    echo "File does not exist."
+    sleep 2
+    edit_project_menu
+  else
+    vi "$file_name"
+    echo "File saved successfully."
+    sleep 2
+    edit_project_menu
+  fi
 }
-#Function to delete project
-delete_project() {
-clear
-echo "=================================="
-echo " WARNING: DELETE PROJECT "
-echo "=================================="
-echo ""
-echo "Are you sure you want to delete this project and all its contents? (y/n)"
-read confirm_delete
 
-if [ $confirm_delete == "y" ]; then
-# Remove project directory
-rm -rf $project_dir
-echo ""
-echo "Project deleted successfully."
-sleep 2
-else
-echo ""
-echo "Project deletion cancelled."
-sleep 2
-fi
+# Function to display the project edit menu
+edit_project_menu() {
+  clear
+  echo "============================="
+  echo "  WELCOME TO PROJECT EDITOR  "
+  echo "============================="
+  echo "1. Edit HTML files"
+  echo "2. Edit CSS files"
+  echo "3. Edit JavaScript files"
+  echo "4. Back to Main Menu"
+  read -p "Enter your choice: " choice
+  case $choice in
+    1) edit_html_files;;
+    2) edit_css_files;;
+    3) edit_js_files;;
+    4) main_menu;;
+    *) echo "Invalid choice."
+       sleep 2
+       edit_project_menu;;
+  esac
+}
 
-main_menu
+# Function to display the main menu
+main_menu() {
+  clear
+  echo "============================="
+  echo "  WELCOME TO PROJECT MANAGER  "
+  echo "============================="
+  echo "1. Create a new project"
+  echo "2. Edit an existing project"
+  echo "3. Exit"
+echo "Please enter your choice:"
+read choice
+case $choice in
+1) create_new_project ;;
+2) edit_project_menu ;;
+3) exit ;;
+*) echo "Invalid choice, please try again."
+sleep 2
+main_menu ;;
+esac
 }
-#Function to exit program
-exit_program() {
-clear
-echo "=================================="
-echo " THANK YOU FOR USING SURGE EDIT "
-echo "=================================="
-echo ""
-exit 0
-}
-#Run main menu on program start
+#Call the main menu function to start the program
 main_menu
