@@ -80,15 +80,12 @@ configure_profile() {
     read username
     echo "Digite seu token de acesso do Git:"
     read token
-    if [ "$encryption_method" = "gpg" ]
-    then
+    if [ "$encryption_method" = "gpg" ]; then
         echo "username=\"$username\"" | gpg --encrypt --armor --recipient $USER_ID > $CONFIG_FILE
         echo "token=\"$token\"" | gpg --encrypt --armor --recipient $USER_ID >> $CONFIG_FILE
-    elif [ "$encryption_method" = "openssl" ]
-    then
+    elif [ "$encryption_method" = "openssl" ]; then
         echo -e "$openssl_passphrase\n$openssl_passphrase" | openssl aes-256-cbc -salt -in <(echo -e "username=\"$username\"\ntoken=\"$token\"") -out $CONFIG_FILE
-    elif [ "$encryption_method" = "gpg+openssl" ]
-    then
+    elif [ "$encryption_method" = "gpg+openssl" ]; then
         echo -e "$openssl_passphrase\n$openssl_passphrase" | openssl aes-256-cbc -salt -in <(echo -e "username=\"$username\"\ntoken=\"$token\"") | gpg --encrypt --armor --recipient $USER_ID > $CONFIG_FILE
     else
         echo "username=\"$username\"" > $CONFIG_FILE
@@ -121,19 +118,26 @@ decryption_method="gpg+openssl"
 decryption_method="none"
 ;;
 esac
-if [ "$decryption_method" != "none" ]
-then
+
+if [ "$decryption_method" != "none" ]; then
 read -s -p "Digite sua senha: " password
-if ! $decryption_method $CONFIG_FILE -d -o temp_config_file; then
-echo "Erro ao desencriptar o arquivo de configuração."
-exit 1
-fi
-source temp_config_file
-rm temp_config_file
+elif [ "$decryption_method" != "gpg" ]; then
+username=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep -oP 'username=\K.+')
+token=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep -oP 'token=\K.+')
+elif [ "$decryption_method" != "openssl" ]; then
+username=$(openssl aes-256-cbc -d -salt -in $CONFIG_FILE -pass pass:$openssl_passphrase | grep -oP 'username="\K[^"]+')
+token=$(openssl aes-256-cbc -d -salt -in $CONFIG_FILE -pass pass:$openssl_passphrase | grep -oP 'token="\K[^"]+')
+elif [ "$decryption_method" != "gpg+openssl" ]; then
+temp_file=$(mktemp)
+openssl aes-256-cbc -d -salt -in $CONFIG_FILE -pass pass:$openssl_passphrase | gpg --decrypt --armor --recipient $USER_ID > $temp_file
+username=$(cat $temp_file | grep -oP 'username="\K[^"]+')
+token=$(cat $temp_file | grep -oP 'token="\K[^"]+')
+rm $temp_file
 else
-source $CONFIG_FILE
+username=$(cat $CONFIG_FILE | grep -oP 'username="\K[^"]+')
+token=$(cat $CONFIG_FILE | grep -oP 'token="\K[^"]+');
 fi
-fi
+
 #Menu principal
 
 echo "Bem-vindo ao Gerenciador de Repositórios Git"
