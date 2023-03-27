@@ -65,6 +65,24 @@ sudo service onioncat start
 echo "Tor onion address: $ONION_ADDRESS"
 }
 
+bitcoin_onioncat_uninstallation() {
+# Stop Bitcoin
+sudo service bitcoind stop
+# Stop OnionCat
+sudo service onioncat stop
+# Remove OnionCat-related options from the Bitcoin configuration file
+sudo sed -i '/prune=/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/connect=127.0.0.1:9050/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/proxy=127.0.0.1:9050/d' /etc/bitcoin/bitcoin.conf
+# Remove OnionCat configuration options from the OnionCat configuration file
+sudo sed -i '/ForwardPortTCP 8333/d' /etc/onioncat/ocat.conf
+sudo sed -i '/ListenAddress 0.0.0.0:9050/d' /etc/onioncat/ocat.conf
+# Restart Bitcoin
+sudo service bitcoind start
+# Display message
+echo "Bitcoin has been reconfigured to use the clearnet network. OnionCat has been stopped."
+}
+
 # Function to display the main menu
 main_menu() {
   clear
@@ -74,8 +92,9 @@ main_menu() {
   echo "1. Install OnionCat"
   echo "2. Update OnionCat"
   echo "3. Remove OnionCat"
-  echo "4. Bitcoin Ocat node Config"
-  echo "5. Exit"
+  echo "4. Bitcoin Ocat node"
+  echo "5. Bitcoin Clear node"
+  echo "6. Exit"
 
   read -p "Enter your choice: " choice
   case $choice in
@@ -83,7 +102,8 @@ main_menu() {
     2) update_onioncat ;;
     3) remove_onioncat ;;
     4) bitcoin_onioncat_installation;;
-    5) exit ;;
+    5) bitcoin_onioncat_uninstallation;;
+    6) exit ;;
     *) echo "Invalid choice. Please try again." && sleep 2 && main_menu ;;
   esac
 }
