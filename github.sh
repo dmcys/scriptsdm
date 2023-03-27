@@ -71,7 +71,7 @@ fi
 # Enviar as alterações para o repositório remoto
     git remote add origin $url
     git branch -M $branch
-    git push -u origin $branch
+    git push https://${username}:${token}@$url $branch
     echo "Alterações enviadas com sucesso para o repositório remoto!"
 }
 
