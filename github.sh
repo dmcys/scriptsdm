@@ -54,13 +54,23 @@ pull_changes() {
 configure_profile() {
     echo "Como você gostaria de encriptar o arquivo de configuração? Digite o número correspondente:"
     echo "1. GPG"
-    echo "2. Não encriptar o arquivo"
+    echo "2. OpenSSL"
+    echo "3. GPG+OpenSSL"
+    echo "4. Não encriptar o arquivo"
     read encryption_option
     case $encryption_option in
         1)
             encryption_method="gpg"
-            echo "Digite o ID do seu chave GPG:"
-            read gpg_key_id
+            ;;
+        2)
+            encryption_method="openssl"
+            echo "Digite uma senha para encriptar o arquivo:"
+            read -s openssl_passphrase
+            ;;
+        3)
+            encryption_method="gpg+openssl"
+            echo "Digite uma senha para encriptar o arquivo com OpenSSL:"
+            read -s openssl_passphrase
             ;;
         *)
             encryption_method="none"
@@ -70,23 +80,23 @@ configure_profile() {
     read username
     echo "Digite seu token de acesso do Git:"
     read token
-    if [ "$encryption_method" != "none" ]
+    if [ "$encryption_method" = "gpg" ]
     then
-        echo "username=\"$username\"" > $CONFIG_FILE
-        echo "token=\"$token\"" >> $CONFIG_FILE
-        echo "encrypt=true" >> $CONFIG_FILE
-        echo "gpg_key_id=\"$gpg_key_id\"" >> $CONFIG_FILE
-        gpg --encrypt --recipient $gpg_key_id $CONFIG_FILE
-        rm $CONFIG_FILE
-        echo "Arquivo de configuração encriptado com sucesso!"
+        echo "username=\"$username\"" | gpg --encrypt --armor --recipient $USER_ID > $CONFIG_FILE
+        echo "token=\"$token\"" | gpg --encrypt --armor --recipient $USER_ID >> $CONFIG_FILE
+    elif [ "$encryption_method" = "openssl" ]
+    then
+        echo -e "$openssl_passphrase\n$openssl_passphrase" | openssl aes-256-cbc -salt -in <(echo -e "username=\"$username\"\ntoken=\"$token\"") -out $CONFIG_FILE
+    elif [ "$encryption_method" = "gpg+openssl" ]
+    then
+        echo -e "$openssl_passphrase\n$openssl_passphrase" | openssl aes-256-cbc -salt -in <(echo -e "username=\"$username\"\ntoken=\"$token\"") | gpg --encrypt --armor --recipient $USER_ID > $CONFIG_FILE
     else
         echo "username=\"$username\"" > $CONFIG_FILE
         echo "token=\"$token\"" >> $CONFIG_FILE
-        echo "encrypt=false" >> $CONFIG_FILE
-        echo "Arquivo de configuração não encriptado."
     fi
     echo "Perfil configurado com sucesso!"
 }
+
 
 #Verificar se o arquivo de configuração existe e carregar as informações de perfil se existir
 
