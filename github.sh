@@ -65,9 +65,6 @@ else
     username=$(cat $CONFIG_FILE | grep -oP '^username=\K.*')
     token=$(cat $CONFIG_FILE | grep -oP '^token=\K.*')
 fi
-# Configurar as credenciais do usuário no GitHub
-    git config --local user.name "$username"
-    git config --local user.email "$username@users.noreply.github.com"
 # Enviar as alterações para o repositório remoto
     git remote add origin $url
     git branch -M $branch
