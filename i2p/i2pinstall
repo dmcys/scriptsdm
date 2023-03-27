@@ -69,6 +69,40 @@ update_i2p() {
   install_i2p
 }
 
+# Function to preconfig the Bitcoin node over I2P
+bitcoin_node() {
+# Start I2P router
+sudo service i2p start
+# Configure Bitcoin to use I2P
+sudo sh -c "echo 'onlynet=i2p' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'onion=127.0.0.1:7656' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'bind=127.0.0.1' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'dnsseed=0' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'discover=0' >> /etc/bitcoin/bitcoin.conf"
+# Restart Bitcoin
+sudo service bitcoind restart
+# Display I2P router information
+echo "I2P router information:"
+sudo cat /var/lib/i2p/i2p-config/i2p-config-file
+}
+
+bitcoin_clearnode() {
+# Stop Bitcoin
+sudo service bitcoind stop
+# Remove I2P-related options from the Bitcoin configuration file
+sudo sed -i '/onlynet=i2p/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/onion=127.0.0.1:7656/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/bind=127.0.0.1/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/dnsseed=0/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/discover=0/d' /etc/bitcoin/bitcoin.conf
+# Restart Bitcoin
+sudo service bitcoind start
+# Stop I2P router
+sudo service i2p stop
+# Display message
+echo "Bitcoin has been reconfigured to use the clearnet network. I2P has been stopped."
+}
+
 # Function to display the main menu
 main_menu() {
   clear
@@ -78,15 +112,18 @@ main_menu() {
   echo "1. Install i2p"
   echo "2. Update i2p"
   echo "3. Remove i2p"
-  echo "4. Quit"
-  echo "4. Exit"
+  echo "4. bitcoin I2P node"
+  echo "5. bitcoin Clear node"
+  echo "6. Exit"
 
   read -p "Enter your choice: " choice
   case $choice in
     1) install_i2p;;
     2) update_i2p;;
     3) remove_i2p;;
-    4) exit ;;
+    4) bitcoin_node;;
+    5) bitcoin_clearnode;;
+    6) exit ;;
     *) echo "Invalid choice. Please try again." && sleep 2 && main_menu ;;
   esac
 }    
