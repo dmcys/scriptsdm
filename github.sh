@@ -17,11 +17,11 @@ clone_repo() {
 }
 
 add_commit_changes() {
-    echo "Digite a mensagem do commit:"
+    echo "Input the commit message: "
     read message
-    echo "Digite a URL do repositório que deseja clonar:"
+    echo "What the name of respositorie that you want modify? "
     read url
-    echo "Digite a Branche do repositório que deseja clonar:"
+    echo "What the name of branche that you want modify? "
     read branch
     git config --unset credential.helper
 
