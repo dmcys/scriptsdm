@@ -75,6 +75,25 @@ edit_js_files() {
   fi
 }
 
+# Function to download a project from a Surge domain
+download_project() {
+  clear
+  echo "============================="
+  echo " DOWNLOAD PROJECT FROM DOMAIN "
+  echo "============================="
+
+  # Prompt the user for the domain name and directory to save the project to
+  read -p "Enter the domain name: " domain_name
+  read -p "Enter the directory to save the project to: " save_directory
+
+  # Download the project files from the domain and save them to the specified directory
+  surge fetch $domain_name $save_directory
+
+  echo "Project downloaded successfully."
+  sleep 2
+  main_menu
+}
+
 # Function to display the project edit menu
 edit_project_menu() {
   clear
@@ -105,17 +124,22 @@ main_menu() {
   echo "============================="
   echo "1. Create a new project"
   echo "2. Edit an existing project"
-  echo "3. Exit"
-echo "Please enter your choice:"
-read choice
-case $choice in
-1) create_new_project ;;
-2) edit_project_menu ;;
-3) exit ;;
-*) echo "Invalid choice, please try again."
-sleep 2
-main_menu ;;
-esac
+  echo "3. Upload project to a domain"
+  echo "4. Download project from a domain"
+  echo "5. Exit"
+
+  read -p "Enter your choice [1-5]: " choice
+  case $choice in
+    1) create_project;;
+    2) edit_project_menu;;
+    3) upload_project;;
+    4) download_project;;
+    5) exit;;
+    *) echo "Invalid choice."
+       sleep 2
+       main_menu;;
+  esac
 }
+
 #Call the main menu function to start the program
 main_menu
