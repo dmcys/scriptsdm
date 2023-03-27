@@ -45,6 +45,26 @@ revert_onioncat_installation() {
   echo "OnionCat installation reverted successfully." && sleep 2
 }
 
+# Function Configure onioncat to run Bitcoin Node
+bitcoin_onioncat_installation() {
+# Generate a new Tor onion address
+PRIVATE_KEY=$(openssl rand -hex 32)
+PUBLIC_KEY=$(echo -n "$PRIVATE_KEY" | openssl dgst -sha256 -binary | openssl dgst -rmd160 | cut -c10-)
+ONION_ADDRESS=$(echo -n "$PUBLIC_KEY" | sed 's/^/fd87d87eh2/;s/$/.onion/')
+# Configure OnionCat to listen on port 9050 and forward to the specified .onion address and port 8333
+sudo sh -c "echo 'ForwardPortTCP 8333 $ONION_ADDRESS:8333' >> /etc/onioncat/ocat.conf"
+sudo sh -c "echo 'ListenAddress 0.0.0.0:9050' >> /etc/onioncat/ocat.conf"
+# Connect to the Bitcoind node through OnionCat
+echo "How size in megabytes you want use in your prune node of Bitcoin?"
+echo "Minimum of: 550"
+read prune
+bitcoind -prune=$prune -connect=127.0.0.1:9050 -proxy=127.0.0.1:9050
+# Start OnionCat
+sudo service onioncat start
+# Display the Tor .onion address for reference
+echo "Tor onion address: $ONION_ADDRESS"
+}
+
 # Function to display the main menu
 main_menu() {
   clear
@@ -54,14 +74,16 @@ main_menu() {
   echo "1. Install OnionCat"
   echo "2. Update OnionCat"
   echo "3. Remove OnionCat"
-  echo "4. Exit"
+  echo "4. Bitcoin Ocat node Config"
+  echo "5. Exit"
 
   read -p "Enter your choice: " choice
   case $choice in
     1) install_onioncat ;;
     2) update_onioncat ;;
     3) remove_onioncat ;;
-    4) exit ;;
+    4) bitcoin_onioncat_installation;;
+    5) exit ;;
     *) echo "Invalid choice. Please try again." && sleep 2 && main_menu ;;
   esac
 }
