@@ -37,6 +37,38 @@ push_changes() {
     then
         branch="main"
     fi
+# Definir o valor da opção core.autocrlf para o git config
+    autocrlf="input"
+git config --local core.autocrlf "$autocrlf"
+# Extrair o valor das variáveis username e token do arquivo de configuração
+# Ask user if they encrypted the CONFIG_FILE using gpg, openssl, both or not at all
+echo "Did you encrypt the CONFIG_FILE? (gpg, openssl, gpg+openssl, none)"
+read encryption_method
+# Check the encryption method and obtain the decrypted contents of the CONFIG_FILE
+if [ "$encryption_method" = "gpg" ]; then
+    read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
+    username=$(grep -oP '^username=\K.*' <<< "$(<$CONFIG_FILE gpg --decrypt --armor --recipient $USER_ID)")
+    token=$(grep -oP '^token=\K.*' <<< "$(<$CONFIG_FILE gpg --decrypt --armor --recipient $USER_ID)")
+    
+elif [ "$encryption_method" = "openssl" ]; then
+    read -p -s "Enter the password used to encrypt the file:" password;
+    username=$(grep -oP '^username=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password")
+    token=$(grep -oP '^token=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password")
+    
+elif [ "$encryption_method" = "gpg+openssl" ]; then
+    read -p -s "Enter the password used to encrypt the file:" password;
+    read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
+    opensl=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)
+    username=$(grep -oP '^username=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID")
+    token=$(grep -oP '^token=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID")
+else
+    username=$(cat $CONFIG_FILE | grep -oP '^username=\K.*')
+    token=$(cat $CONFIG_FILE | grep -oP '^token=\K.*')
+fi
+# Configurar as credenciais do usuário no GitHub
+    git config --local user.name "$username"
+    git config --local user.email "$username@users.noreply.github.com"
+# Enviar as alterações para o repositório remoto
     git remote add origin $url
     git branch -M $branch
     git push -u origin $branch
@@ -93,50 +125,6 @@ configure_profile() {
     fi
     echo "Perfil configurado com sucesso!"
 }
-
-
-#Verificar se o arquivo de configuração existe e carregar as informações de perfil se existir
-
-if [[ -f "$CONFIG_FILE" ]]; then
-echo "Arquivo de configuração encontrado. Deseja desencriptá-lo? Digite o número correspondente:"
-echo "1. GPG"
-echo "2. OpenSSL"
-echo "3. GPG+OpenSSL"
-echo "4. Não encriptado"
-read encryption_option
-case $encryption_option in
-1)
-decryption_method="gpg"
-;;
-2)
-decryption_method="openssl"
-;;
-3)
-decryption_method="gpg+openssl"
-;;
-*)
-decryption_method="none"
-;;
-esac
-
-if [ "$decryption_method" != "none" ]; then
-read -s -p "Digite sua senha: " password
-elif [ "$decryption_method" != "gpg" ]; then
-username=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep -oP 'username=\K.+')
-token=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep -oP 'token=\K.+')
-elif [ "$decryption_method" != "openssl" ]; then
-username=$(openssl aes-256-cbc -d -salt -in $CONFIG_FILE -pass pass:$openssl_passphrase | grep -oP 'username="\K[^"]+')
-token=$(openssl aes-256-cbc -d -salt -in $CONFIG_FILE -pass pass:$openssl_passphrase | grep -oP 'token="\K[^"]+')
-elif [ "$decryption_method" != "gpg+openssl" ]; then
-temp_file=$(mktemp)
-openssl aes-256-cbc -d -salt -in $CONFIG_FILE -pass pass:$openssl_passphrase | gpg --decrypt --armor --recipient $USER_ID > $temp_file
-username=$(cat $temp_file | grep -oP 'username="\K[^"]+')
-token=$(cat $temp_file | grep -oP 'token="\K[^"]+')
-rm $temp_file
-else
-username=$(cat $CONFIG_FILE | grep -oP 'username="\K[^"]+')
-token=$(cat $CONFIG_FILE | grep -oP 'token="\K[^"]+');
-fi
 
 #Menu principal
 
