@@ -16,14 +16,56 @@ clone_repo() {
     echo "Repositório clonado com sucesso!"
 }
 
-# Função para adicionar e confirmar alterações
 add_commit_changes() {
     echo "Digite a mensagem do commit:"
     read message
-    git add .
-    git commit -m "$message"
+    echo "Digite a URL do repositório que deseja clonar:"
+    read url
+    echo "Digite a Branche do repositório que deseja clonar:"
+    read branch
+    git config --unset credential.helper
+
+# Function to decrypt
+echo "Did you encrypt the CONFIG_FILE? (gpg, openssl, gpg+openssl, none)"
+read encryption_method
+if [ "$encryption_method" = "gpg" ]; then
+    echo "Input USER-ID of GPG Key: "
+    read -s USER_ID
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
     echo "Alterações adicionadas e confirmadas com sucesso!"
+elif [ "$encryption_method" = "openssl" ]; then
+    echo "Input password of openssl file: "
+    read -s password
+    decryptedu=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
+    echo "Alterações adicionadas e confirmadas com sucesso!"
+elif [ "$encryption_method" = "gpg+openssl" ]; then
+    read -p -s "Enter the password used to encrypt the file:" password;
+    read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
+    opensl=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
+    echo "Alterações adicionadas e confirmadas com sucesso!"
+else
+    decryptedu=$(cat $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(cat $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
+    echo "Alterações adicionadas e confirmadas com sucesso!"
+fi
 }
+
 
 # Função para enviar alterações para um repositório remoto
 push_changes() {
@@ -36,35 +78,41 @@ push_changes() {
     then
         branch="main"
     fi
-# Ask user if they encrypted the CONFIG_FILE using gpg, openssl, both or not at all
+# Function to decrypt
 echo "Did you encrypt the CONFIG_FILE? (gpg, openssl, gpg+openssl, none)"
 read encryption_method
-# Check the encryption method and obtain the decrypted contents of the CONFIG_FILE
 if [ "$encryption_method" = "gpg" ]; then
-    read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
-    username=$(grep -oP '^username=\K.*' <<< "$(<$CONFIG_FILE gpg --decrypt --armor --recipient $USER_ID)")
-    token=$(grep -oP '^token=\K.*' <<< "$(<$CONFIG_FILE gpg --decrypt --armor --recipient $USER_ID)")
-    
+    echo "Input USER-ID of GPG Key: "
+    read -s USER_ID
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
+    echo "Alterações enviadas com sucesso para o repositório remoto!"
 elif [ "$encryption_method" = "openssl" ]; then
     echo "Input password of openssl file: "
     read -s password
     decryptedu=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep username | cut -d'=' -f2 | tr -d '"')
     decryptedt=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep token | cut -d'=' -f2 | tr -d '"')
-    
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
+    echo "Alterações enviadas com sucesso para o repositório remoto!"
 elif [ "$encryption_method" = "gpg+openssl" ]; then
     read -p -s "Enter the password used to encrypt the file:" password;
     read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
     opensl=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)
-    username=$(grep -oP '^username=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID)")
-    token=$(grep -oP '^token=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID)")
-else
-    username=$(cat $CONFIG_FILE | grep -oP '^username=\K.*')
-    token=$(cat $CONFIG_FILE | grep -oP '^token=\K.*')
-fi
-    git add origin https://github.com/${decryptedu}/${url}.git
-    git branch -M $branch
-    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
     echo "Alterações enviadas com sucesso para o repositório remoto!"
+else
+    decryptedu=$(cat $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(cat $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
+    echo "Alterações enviadas com sucesso para o repositório remoto!"
+fi
 }
 
 
