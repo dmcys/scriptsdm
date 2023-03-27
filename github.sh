@@ -27,7 +27,8 @@ add_commit_changes() {
 
 # Função para enviar alterações para um repositório remoto
 push_changes() {
-    echo "Digite a URL do repositório remoto:"
+#    echo "Digite a URL do repositório remoto:"
+#    echo "Digite o nome do repositório remoto:"
     read url
     echo "Digite o nome da branch que deseja enviar as alterações:"
     read branch
@@ -45,9 +46,10 @@ if [ "$encryption_method" = "gpg" ]; then
     token=$(grep -oP '^token=\K.*' <<< "$(<$CONFIG_FILE gpg --decrypt --armor --recipient $USER_ID)")
     
 elif [ "$encryption_method" = "openssl" ]; then
-    read -p -s "Enter the password used to encrypt the file: " password
-    username=$(grep -oP '^username=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)")
-    token=$(grep -oP '^token=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)")
+    echo "Input password of openssl file: "
+    read -s password
+    decryptedu=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep token | cut -d'=' -f2 | tr -d '"')
     
 elif [ "$encryption_method" = "gpg+openssl" ]; then
     read -p -s "Enter the password used to encrypt the file:" password;
@@ -59,9 +61,9 @@ else
     username=$(cat $CONFIG_FILE | grep -oP '^username=\K.*')
     token=$(cat $CONFIG_FILE | grep -oP '^token=\K.*')
 fi
-    git remote add origin $url
+    git add origin https://github.com/${decryptedu}/${url}.git
     git branch -M $branch
-    git push https://${username}:${token}@$url $branch
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
     echo "Alterações enviadas com sucesso para o repositório remoto!"
 }
 
