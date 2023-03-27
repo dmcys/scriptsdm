@@ -19,7 +19,7 @@ clone_repo() {
 add_commit_changes() {
     echo "Input the commit message: "
     read message
-    echo "What the name of respositorie that you want modify? "
+    echo "What the name of respository that you want modify? "
     read url
     echo "What the name of branche that you want modify? "
     read branch
