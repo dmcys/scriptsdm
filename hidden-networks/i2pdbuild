@@ -28,6 +28,49 @@ function uninstall_i2pd {
     revert_i2pd_build
 }
 
+# Function to preconfig Bitcoin node
+function bitcoin_node {
+# Generate a new i2p destination
+i2pd --generate-keys --silent
+I2P_DESTINATION=$(cat ~/.i2pd/keys.dat | grep -Po '(?<=^PrivateKey\ =\ ).*')
+# Configure i2pd to use the specified destination as the bitcoin service
+echo "[bitcoin]
+type = server
+host = 127.0.0.1
+port = 8333
+keys = $I2P_DESTINATION" | sudo tee -a /etc/i2pd/i2pd.conf > /dev/null
+# Start i2pd
+sudo service i2pd start
+# Configure Bitcoin to use the i2p network
+sudo sh -c "echo 'listen=1' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'bind=127.0.0.1' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'onlynet=i2p' >> /etc/bitcoin/bitcoin.conf"
+sudo sh -c "echo 'onion=127.0.0.1:8888' >> /etc/bitcoin/bitcoin.conf"
+# Start Bitcoin
+sudo service bitcoind start
+# Display the i2p destination for reference
+echo "i2p destination: $I2P_DESTINATION"
+}
+
+function bitcoin_cnode {
+#!/bin/bash
+
+# Stop Bitcoin and i2pd
+sudo service bitcoind stop
+sudo service i2pd stop
+# Remove Bitcoin i2p network configuration
+sudo sed -i '/listen=1/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/bind=127.0.0.1/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/onlynet=i2p/d' /etc/bitcoin/bitcoin.conf
+sudo sed -i '/onion=127.0.0.1:8888/d' /etc/bitcoin/bitcoin.conf
+# Remove i2pd Bitcoin service configuration
+sudo sed -i '/\[bitcoin\]/d' /etc/i2pd/i2pd.conf
+# Delete i2pd keys and stop i2pd
+rm -rf ~/.i2pd
+sudo service i2pd stop
+echo "Bitcoin and i2pd nodes stopped and configurations removed"
+}
+
 # Main menu
 while true; do
     clear
@@ -36,7 +79,9 @@ while true; do
     echo "==============================="
     echo "1. Install i2pd"
     echo "2. Uninstall i2pd"
-    echo "3. Quit"
+    echo "3. Bitcoin I2PD Node"
+    echo "4. Bitcoin Clear Node"
+    echo "5. Quit"
     read -p "Enter your choice: " choice
     
     case $choice in
@@ -57,6 +102,14 @@ while true; do
             fi
             ;;
         3)
+                bitcoin_node
+                read -p "Press enter to continue..."
+            ;;
+        4)
+                bitcoin_cnode
+                read -p "Press enter to continue..."
+            ;;
+        5)
             echo "Quitting..."
             exit
             ;;
