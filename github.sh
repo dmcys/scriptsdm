@@ -1,5 +1,4 @@
 #!/bin/bash
-
 CONFIG_FILE=~/.git-manager.conf
 
 # Função para clonar um repositório
@@ -16,7 +15,6 @@ clone_repo() {
     fi
     echo "Repositório clonado com sucesso!"
 }
-
 
 # Função para adicionar e confirmar alterações
 add_commit_changes() {
@@ -37,10 +35,6 @@ push_changes() {
     then
         branch="main"
     fi
-# Definir o valor da opção core.autocrlf para o git config
-    autocrlf="input"
-git config --local core.autocrlf "$autocrlf"
-# Extrair o valor das variáveis username e token do arquivo de configuração
 # Ask user if they encrypted the CONFIG_FILE using gpg, openssl, both or not at all
 echo "Did you encrypt the CONFIG_FILE? (gpg, openssl, gpg+openssl, none)"
 read encryption_method
@@ -51,21 +45,20 @@ if [ "$encryption_method" = "gpg" ]; then
     token=$(grep -oP '^token=\K.*' <<< "$(<$CONFIG_FILE gpg --decrypt --armor --recipient $USER_ID)")
     
 elif [ "$encryption_method" = "openssl" ]; then
-    read -p -s "Enter the password used to encrypt the file:" password;
-    username=$(grep -oP '^username=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password")
-    token=$(grep -oP '^token=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password")
+    read -p -s "Enter the password used to encrypt the file: " password
+    username=$(grep -oP '^username=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)")
+    token=$(grep -oP '^token=\K.*' <<< "$(<$openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)")
     
 elif [ "$encryption_method" = "gpg+openssl" ]; then
     read -p -s "Enter the password used to encrypt the file:" password;
     read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
     opensl=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)
-    username=$(grep -oP '^username=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID")
-    token=$(grep -oP '^token=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID")
+    username=$(grep -oP '^username=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID)")
+    token=$(grep -oP '^token=\K.*' <<< "$(<$opensl gpg --decrypt --armor --recipient $USER_ID)")
 else
     username=$(cat $CONFIG_FILE | grep -oP '^username=\K.*')
     token=$(cat $CONFIG_FILE | grep -oP '^token=\K.*')
 fi
-# Enviar as alterações para o repositório remoto
     git remote add origin $url
     git branch -M $branch
     git push https://${username}:${token}@$url $branch
