@@ -15,3 +15,13 @@ bitcoin_onioncat_installation
 
 (2)#### Output of cat directly to clipboard
 cat arquivo.txt | xclip -selection clipboard
+
+(3)#### Create one user input that accept special characteres and bigger input with higher amount of lines
+# Set the IFS variable to a newline character
+IFS=$'\n'
+# Read input with multiple lines
+echo "Enter multi-line input (press Ctrl+D to finish):"
+text=""
+while read line; do
+read -r -d '' text
+done
