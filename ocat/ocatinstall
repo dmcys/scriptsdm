@@ -1,3 +1,6 @@
+#!bin/bash
+ocatinstall() {
+ocatinstal() {
 # Function to install OnionCat
 install_onioncat() {
   echo "This script downloads, compiles and installs OnionCat."
@@ -110,3 +113,14 @@ main_menu() {
 
 # Start the program
 main_menu
+}
+# Ask user for input
+read -p "Onioncat? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  ocatinstal
+else
+  echo "Onioncat canceled by user"
+fi
+}
+ocatinstall
