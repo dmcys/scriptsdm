@@ -1,3 +1,6 @@
+## Builds  
+https://raw.githubusercontent.com/defiminds/bitcoin/master/build.sh # Bitcoin-core from fork  
+  
 ## Configs  
 https://raw.githubusercontent.com/defiminds/scripts/main/browsers/bwinstall # Browsers  
 https://raw.githubusercontent.com/defiminds/scripts/main/firewall/sysctl.sh # Sysctl.conf  
