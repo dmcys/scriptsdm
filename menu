@@ -1,91 +1,88 @@
-#!bin/sh
-clear
-{
-while true $a in $='a'
-do
-menu
-clear
-echo "========================================"
-echo "DeFi Minds - Menu"
-echo "1) Network Install | 2) Install Browsers"
-echo "----------------------------------------"
-echo "3) Config gcat/client | 4) gcat/server"
-echo "5) Config i2p"
-echo "----------------------------------------"
-echo "f) Firewall Script"
-echo "c) Contacts | q) Quit"
-echo "========================================="
-read a
-echo "You choiced: $a"
-case $a in
-1)
-{
-while true $if1 in $='if1'
-do
-menu
-clear
- echo "======================================================"
- echo " Network Install"
- echo " 1) Install TOR | 2) Install i2p | 3) Install Onioncat"
- echo "------------------------------------------------------"
- echo " 4) Remove TOR | 5) Remove i2p | 6) Remove Onioncat"
- echo "------------------------------------------------------"
- echo " r) Return"
- echo "======================================================"
- read if1
- echo "You choiced: $if1"
- case $if1 in
- 1)
-  echo "Updating distro and installing TOR...." && sleep 2 && sudo apt -y update;sudo apt -y install tor && sudo systemctl disable tor && sudo systemctl start tor
-  echo;;
- 2)
-  xfce4-terminal -x sudo sh ./i2p/i2pinstall
-  echo;;
- 3)
-  xfce4-terminal -x sudo sh ./ocat/ocatinstall
-  echo;;
- 4)
-  echo "Removing TOR.." && sudo apt -y remove tor && sudo apt -y purge tor && sudo apt -y autoremove && sudo apt -y clean
-  echo;;
- 5)
-  echo "Removing i2p.." && sudo apt -y remove i2p && sudo apt -y purge i2p && sudo apt -y autoremove && sudo apt -y clean
-  echo;;
- 6)
-  rm -r /home/$USER/onioncat*
-  echo;;
-
- r)
+#!/bin/bash
+# Function to execute scripts from a file
+function execute_scripts_from_file() {
   clear
-  exit;;
+  # Load the functions from the file
+  source "$1"
 
- esac
- done
- }
-echo;;
-2)
-xfce4-terminal -x sudo sh ./browsers/bwinstall
-echo;;
+  # Prompt the user for input
+  echo "Enter the name of the function to execute:"
+  read function_name
 
-f)
-xfce4-terminal -x sudo sh ./firewall/fwmanager
-echo;;
-
-c)
-echo "DeFi Minds contacts at now is these;"
-echo "Twitter Project: @defiminds| email: defiminds@onionmail.org"
-echo "Buy me a coffe if you think can the addresses is these;"
-echo "Bitcoin: 1DAUErsj85tKgkhBBr5Exj8oEk5fE3sBiy"
-echo "Stacks: SP22RY83R4XBX26K3SK5SX5Z6PQSE3ZSXRT5XRVZF"
-echo "Ethereum: 0x0987A758c3f9a1d189bd14bEece21Fd61bBC5755"
-sleep 7
-echo;;
-
-q)
-clear
-echo "Bye!"
-exit;;
-
-esac
-done
-menu
+  # Call the selected function
+  if [ "$(type -t "$function_name")" == "function" ]; then
+    "$function_name"
+  else
+    echo "Function not found"
+  fi
 }
+# Function to execute scripts from a source URL
+function execute_scripts_from_source() {
+  clear
+  # Download the script from the source URL and save it to a temporary file
+  tmpfile=$(mktemp)
+  if ! curl -fsSL "$1" > "$tmpfile"; then
+    echo "Failed to download script from source URL"
+    rm -f "$tmpfile"
+    return 1
+  fi
+  # Load the functions from the temporary file
+  source "$tmpfile"
+  # Prompt the user for input
+  echo "Enter the name of the function to execute:"
+  read function_name
+  # Call the selected function
+  if [ "$(type -t "$function_name")" == "function" ]; then
+    "$function_name"
+  else
+    echo "Function not found"
+  fi
+  # Remove the temporary file
+  rm -f "$tmpfile"
+}
+# Source list of codes
+function list() {
+  clear
+  # Get the message from the URL and store it in a variable
+  message=$(curl -fsSL "https://raw.githubusercontent.com/defiminds/scripts/main/source.list")
+
+  # Remove leading/trailing whitespace and compact the message
+  compacted_message=$(echo "$message" | tr -d '\n' | tr -s ' ')
+
+  # Print the compacted message to the screen
+  printf "%s\n" "$compacted_message"
+}
+# Loop to display the menu of options
+while true; do
+  echo ""
+  echo "Select an option:"
+  echo "1) Execute script from file"
+  echo "2) Execute script from source URL"
+  echo "3) Exit"
+  echo ""
+  echo "src) Source list"
+  # Read the user's choice
+  read choice
+  # Execute the chosen option
+  case "$choice" in
+    1)
+      echo "Enter the path to the file:"
+      read file_path
+      execute_scripts_from_file "$file_path"
+      ;;
+    2)
+      echo "Enter the source URL of the script:"
+      read source_url
+      execute_scripts_from_source "$source_url"
+      ;;
+    3)
+      exit 0
+      ;;
+   src)
+      list
+      ;;
+    *)
+      echo "Invalid option"
+      ;;
+  esac
+done
