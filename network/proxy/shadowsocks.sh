@@ -157,7 +157,7 @@ echo "Shadowsocks server running on port 8388"
 echo "Make sure to configure your Shadowsocks client to connect to this server"
     }
 # Ask user for input
-read -p "Do you want to install Shadowsocks? (y/n) " choice
+read -p "Do you want to install Shadowsocks as server mode in Whonix-CLI? (y/n) " choice
 # Check user input
 if [[ "$choice" == [yY] ]]; then
   whnix
@@ -165,6 +165,7 @@ else
   echo "Whonix configuration canceled by user"
 fi
 }
+whonix
 
 firewall() {
 firewll() {
