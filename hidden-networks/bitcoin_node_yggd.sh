@@ -1,4 +1,6 @@
 #!/bin/bash
+bitcoin_node_yggd() {
+bitcoin_node_ygd() {
 echo "1) To Config BTC-YGGD Node"
 echo "2) To Del Config of Node"
 read choose
@@ -29,3 +31,14 @@ sudo sed -i '/^connect=/d' /etc/bitcoin/bitcoin.conf
 #Display the Yggdrasil address for reference
 echo "Yggdrasil address removed: $YGGDRASIL_ADDRESS"
 fi
+}
+# Ask user for input
+read -p "Do you want to install bitcoin node yggd ? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  bitcoin_node_ygd
+else
+  echo "bitcoin node yggd installation canceled by user"
+fi
+}
+bitcoin_node_yggd
