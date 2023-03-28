@@ -1,5 +1,6 @@
 #!/bin/bash
-
+github() {
+githb() {
 CONFIG_FILE=~/.git-manager.conf
 
 # Função para clonar um repositório
@@ -155,3 +156,14 @@ configure_profile
 echo "Opção inválida, por favor selecione uma opção válida"
 ;;
 esac
+}
+# Ask user for input
+read -p "Do you want use Github? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  githb
+else
+  echo "Github use canceled by user"
+fi
+}
+github
