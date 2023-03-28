@@ -37,14 +37,12 @@ sudo rm -rf /var/log/privoxy/
 echo "Privoxy configuration has been removed successfully."
 }
 # Ask user for input
-read -p "Do you want to install and configure Privoxy? (y/n) " choice
+read -p "Do you want to uninstall Privoxy? (y/n) " choice
 # Check user input
 if [[ "$choice" == [yY] ]]; then
-  read -p "Enter the port number to use for Privoxy (default is 8118): " port
-  port=${port:-8118}
   uninstall_prvoxy
 else
-  echo "Privoxy installation canceled by user"
+  echo "Privoxy uninstallation canceled by user"
 fi
 }
 }
