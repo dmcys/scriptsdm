@@ -18,7 +18,7 @@ read -p "Do you want to install and configure Privoxy? (y/n) " choice
 if [[ "$choice" == [yY] ]]; then
   read -p "Enter the port number to use for Privoxy (default is 8118): " port
   port=${port:-8118}
-  install_privoxy
+  install_prvoxy
 else
   echo "Privoxy installation canceled by user"
 fi
