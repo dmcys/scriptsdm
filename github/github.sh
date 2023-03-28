@@ -1,6 +1,4 @@
 #!/bin/bash
-github() {
-githb() {
 CONFIG_FILE=~/.git-manager.conf
 
 # Função para clonar um repositório
@@ -18,19 +16,61 @@ clone_repo() {
     echo "Repositório clonado com sucesso!"
 }
 
-
-# Função para adicionar e confirmar alterações
 add_commit_changes() {
-    echo "Digite a mensagem do commit:"
+    echo "Input the commit message: "
     read message
-    git add .
-    git commit -m "$message"
+    echo "What the name of respository that you want modify? "
+    read url
+    echo "What the name of branche that you want modify? "
+    read branch
+    git config --unset credential.helper
+
+# Function to decrypt
+echo "Did you encrypt the CONFIG_FILE? (gpg, openssl, gpg+openssl, none)"
+read encryption_method
+if [ "$encryption_method" = "gpg" ]; then
+    echo "Input USER-ID of GPG Key: "
+    read -s USER_ID
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
     echo "Alterações adicionadas e confirmadas com sucesso!"
+elif [ "$encryption_method" = "openssl" ]; then
+    echo "Input password of openssl file: "
+    read -s password
+    decryptedu=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
+    echo "Alterações adicionadas e confirmadas com sucesso!"
+elif [ "$encryption_method" = "gpg+openssl" ]; then
+    read -p -s "Enter the password used to encrypt the file:" password;
+    read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
+    opensl=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
+    echo "Alterações adicionadas e confirmadas com sucesso!"
+else
+    decryptedu=$(cat $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(cat $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git remote set-url origin https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git
+    git add ./
+    git commit -m "${message}"
+    echo "Alterações adicionadas e confirmadas com sucesso!"
+fi
 }
+
 
 # Função para enviar alterações para um repositório remoto
 push_changes() {
-    echo "Digite a URL do repositório remoto:"
+#    echo "Digite a URL do repositório remoto:"
+    echo "Digite o nome do repositório remoto:"
     read url
     echo "Digite o nome da branch que deseja enviar as alterações:"
     read branch
@@ -38,10 +78,41 @@ push_changes() {
     then
         branch="main"
     fi
-    git remote add origin $url
-    git branch -M $branch
-    git push -u origin $branch
+# Function to decrypt
+echo "Did you encrypt the CONFIG_FILE? (gpg, openssl, gpg+openssl, none)"
+read encryption_method
+if [ "$encryption_method" = "gpg" ]; then
+    echo "Input USER-ID of GPG Key: "
+    read -s USER_ID
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
     echo "Alterações enviadas com sucesso para o repositório remoto!"
+elif [ "$encryption_method" = "openssl" ]; then
+    echo "Input password of openssl file: "
+    read -s password
+    decryptedu=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
+    echo "Alterações enviadas com sucesso para o repositório remoto!"
+elif [ "$encryption_method" = "gpg+openssl" ]; then
+    read -p -s "Enter the password used to encrypt the file:" password;
+    read -p -s "Enter the KEY-ID used to encrypt the file:" USER_ID;
+    opensl=$(openssl aes-256-cbc -d -in $CONFIG_FILE -pass pass:$password)
+    decryptedu=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(gpg --decrypt --armor --recipient $USER_ID $opensl | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
+    echo "Alterações enviadas com sucesso para o repositório remoto!"
+else
+    decryptedu=$(cat $CONFIG_FILE | grep username | cut -d'=' -f2 | tr -d '"')
+    decryptedt=$(cat $CONFIG_FILE | grep token | cut -d'=' -f2 | tr -d '"')
+    git config --unset credential.helper
+    git push https://${decryptedu}:${decryptedt}@github.com/${decryptedu}/${url}.git ${branch}
+    echo "Alterações enviadas com sucesso para o repositório remoto!"
+fi
 }
 
 
@@ -55,13 +126,23 @@ pull_changes() {
 configure_profile() {
     echo "Como você gostaria de encriptar o arquivo de configuração? Digite o número correspondente:"
     echo "1. GPG"
-    echo "2. Não encriptar o arquivo"
+    echo "2. OpenSSL"
+    echo "3. GPG+OpenSSL"
+    echo "4. Não encriptar o arquivo"
     read encryption_option
     case $encryption_option in
         1)
             encryption_method="gpg"
-            echo "Digite o ID do seu chave GPG:"
-            read gpg_key_id
+            ;;
+        2)
+            encryption_method="openssl"
+            echo "Digite uma senha para encriptar o arquivo:"
+            read -s openssl_passphrase
+            ;;
+        3)
+            encryption_method="gpg+openssl"
+            echo "Digite uma senha para encriptar o arquivo com OpenSSL:"
+            read -s openssl_passphrase
             ;;
         *)
             encryption_method="none"
@@ -71,60 +152,20 @@ configure_profile() {
     read username
     echo "Digite seu token de acesso do Git:"
     read token
-    if [ "$encryption_method" != "none" ]
-    then
-        echo "username=\"$username\"" > $CONFIG_FILE
-        echo "token=\"$token\"" >> $CONFIG_FILE
-        echo "encrypt=true" >> $CONFIG_FILE
-        echo "gpg_key_id=\"$gpg_key_id\"" >> $CONFIG_FILE
-        gpg --encrypt --recipient $gpg_key_id $CONFIG_FILE
-        rm $CONFIG_FILE
-        echo "Arquivo de configuração encriptado com sucesso!"
+    if [ "$encryption_method" = "gpg" ]; then
+        echo "username=\"$username\"" | gpg --encrypt --armor --recipient $USER_ID > $CONFIG_FILE
+        echo "token=\"$token\"" | gpg --encrypt --armor --recipient $USER_ID >> $CONFIG_FILE
+    elif [ "$encryption_method" = "openssl" ]; then
+        echo -e "$openssl_passphrase\n$openssl_passphrase" | openssl aes-256-cbc -salt -in <(echo -e "username=\"$username\"\ntoken=\"$token\"") -out $CONFIG_FILE
+    elif [ "$encryption_method" = "gpg+openssl" ]; then
+        echo -e "$openssl_passphrase\n$openssl_passphrase" | openssl aes-256-cbc -salt -in <(echo -e "username=\"$username\"\ntoken=\"$token\"") | gpg --encrypt --armor --recipient $USER_ID > $CONFIG_FILE
     else
         echo "username=\"$username\"" > $CONFIG_FILE
         echo "token=\"$token\"" >> $CONFIG_FILE
-        echo "encrypt=false" >> $CONFIG_FILE
-        echo "Arquivo de configuração não encriptado."
     fi
     echo "Perfil configurado com sucesso!"
 }
 
-#Verificar se o arquivo de configuração existe e carregar as informações de perfil se existir
-
-if [[ -f "$CONFIG_FILE" ]]; then
-echo "Arquivo de configuração encontrado. Deseja desencriptá-lo? Digite o número correspondente:"
-echo "1. GPG"
-echo "2. OpenSSL"
-echo "3. GPG+OpenSSL"
-echo "4. Não encriptado"
-read encryption_option
-case $encryption_option in
-1)
-decryption_method="gpg"
-;;
-2)
-decryption_method="openssl"
-;;
-3)
-decryption_method="gpg+openssl"
-;;
-*)
-decryption_method="none"
-;;
-esac
-if [ "$decryption_method" != "none" ]
-then
-read -s -p "Digite sua senha: " password
-if ! $decryption_method $CONFIG_FILE -d -o temp_config_file; then
-echo "Erro ao desencriptar o arquivo de configuração."
-exit 1
-fi
-source temp_config_file
-rm temp_config_file
-else
-source $CONFIG_FILE
-fi
-fi
 #Menu principal
 
 echo "Bem-vindo ao Gerenciador de Repositórios Git"
@@ -156,14 +197,3 @@ configure_profile
 echo "Opção inválida, por favor selecione uma opção válida"
 ;;
 esac
-}
-# Ask user for input
-read -p "Do you want use Github? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  githb
-else
-  echo "Github use canceled by user"
-fi
-}
-github
