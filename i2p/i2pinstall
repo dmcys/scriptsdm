@@ -1,5 +1,6 @@
 #!/bin/bash
-
+i2pinstall() {
+i2pinstal() {
 # Function to install i2p
 install_i2p() {
   clear
@@ -127,3 +128,14 @@ main_menu() {
     *) echo "Invalid choice. Please try again." && sleep 2 && main_menu ;;
   esac
 }    
+}
+# Ask user for input
+read -p "Do you want to install i2p install ? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  i2pinstal
+else
+  echo "i2p install installation canceled by user"
+fi
+}
+i2pinstall
