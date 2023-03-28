@@ -45,12 +45,8 @@ function list() {
   clear
   # Get the message from the URL and store it in a variable
   message=$(curl -fsSL "https://raw.githubusercontent.com/defiminds/scripts/main/source.list")
-
-  # Remove leading/trailing whitespace and compact the message
-  compacted_message=$(echo "$message" | tr -d '\n' | tr -s ' ')
-
   # Print the compacted message to the screen
-  printf "%s\n" "$compacted_message"
+  echo -ne -n -e "${message}"
 }
 # Loop to display the menu of options
 while true; do
