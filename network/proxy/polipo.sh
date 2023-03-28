@@ -1,5 +1,6 @@
 #!bin/bash
 install_polipo() {
+install_polpo() {
 # Install Polipo
 echo "Installing Polipo..."
 sudo apt update
@@ -25,9 +26,19 @@ echo "Restarting Polipo service..."
 sudo systemctl restart polipo
 echo "Polipo has been installed and configured!"
 }
+# Ask user for input
+read -p "Do you want to install polipo? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  install_polpo
+else
+  echo "polipo installation canceled by user"
+fi
+}
 install_polipo
 
 uninstall_polipo() {
+uninstall_polpo() {
 # Stop the Polipo service
 sudo systemctl stop polipo.service
 # Remove the Polipo package and its configuration files
@@ -41,5 +52,14 @@ sudo groupdel polipo
 # Reload the systemd daemon
 sudo systemctl daemon-reload
 echo "Polipo has been completely removed from your system."
+}
+# Ask user for input
+read -p "Do you want to uninstall polipo? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  uninstall_polpo
+else
+  echo "polipo uninstallation canceled by user"
+fi
 }
 uninstall_polipo
