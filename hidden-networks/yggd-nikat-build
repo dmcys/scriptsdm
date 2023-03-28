@@ -1,5 +1,6 @@
 #!/bin/bash
-
+yggd_nikat_build() {
+yggd_nikat_buid() {
 # Install Go
 sudo apt-get update
 sudo apt-get install -y golang radvd
@@ -60,3 +61,14 @@ interface eth0
 EOF
 
 sudo systemctl restart radvd
+}
+# Ask user for input
+read -p "Do you want to install yggd nikat build ? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  yggd_nikat_buid
+else
+  echo "yggd nikat build installation canceled by user"
+fi
+}
+yggd_nikat_build
