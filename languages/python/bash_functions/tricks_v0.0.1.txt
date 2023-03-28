@@ -1,0 +1,14 @@
+##### Calling one function from external shell source ##################################################################################################################################
+#Function to configure the Bitcoin node with OnionCat
+onioncat_config() {
+# Define a function to load the external script
+load_external_script() {
+  # Download the external script and source it
+  source <(curl -sSL "https://gist.githubusercontent.com/defiminds/84b8d8cddbb7fc61345f3181f0b63d23/raw/7dd0656bdcf13de1ea21990b283b9b290b2a8876/onioncat.sh")
+}
+# Call the function to load the external script
+load_external_script
+# Call a function from the external script
+bitcoin_onioncat_installation
+}
+########################################################################################################################################################################################
