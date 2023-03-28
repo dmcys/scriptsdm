@@ -1,5 +1,5 @@
 shall() {
-    source <(curl -sSL "https://github.com/defiminds/scripts/blob/main/shall/basefunctions.sh")
+    source <(curl -sSL "https://raw.githubusercontent.com/defiminds/scripts/main/shall/basefunctions.sh")
 }
 shll() {
     read -p "URL Of Base functions?: " url
@@ -8,12 +8,12 @@ shll() {
 powers() {
 list_functions() {
   # Download the script and extract all functions
-  curl -sSL "https://github.com/defiminds/scripts/blob/main/shall/basefunctions.sh" \
+  curl -sSL "https://raw.githubusercontent.com/defiminds/scripts/main/shall/basefunctions.sh" \
   | grep '^function' \
   | awk '{print $2}'
 
   # Alternatively, if you only want to list the function names and not their content:
-  # curl -sSL "https://github.com/defiminds/scripts/blob/main/shall/basefunctions.sh" \
+  # curl -sSL "https://raw.githubusercontent.com/defiminds/scripts/main/shall/basefunctions.sh" \
   # | grep '^function' \
   # | awk '{print $2}' \
   # | sed 's/()//'
