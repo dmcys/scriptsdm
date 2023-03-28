@@ -1,5 +1,6 @@
 #!/bin/bash
-
+i2pdbuild() {
+i2pdbuid() {
 # Function to install i2pd
 function install_i2pd {
     # Update and upgrade packages
@@ -119,3 +120,14 @@ while true; do
             ;;
     esac
 done
+}
+# Ask user for input
+read -p "Do you want to install I2PDBuild? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  i2pdbuid
+else
+  echo "I2PDBuild installation canceled by user"
+fi
+}
+i2pdbuild
