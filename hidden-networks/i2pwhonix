@@ -1,5 +1,6 @@
 #!/bin/bash
-
+i2pwhonix() {
+i2pwhnix() {
 # Prompt user for Whonix-Workstation or Qubes template
 read -p "Are you using Whonix-Workstation template or Qubes template? [y/n]: " whonix
 if [ $whonix = "y" ];
@@ -41,3 +42,14 @@ then
     sudo apt-get update
     sudo apt-get install anon-apps-config
 fi
+}
+# Ask user for input
+read -p "Do you want to install i2p Whonix ? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  i2pwhnix
+else
+  echo "i2p Whonix installation canceled by user"
+fi
+}
+i2pwhonix
