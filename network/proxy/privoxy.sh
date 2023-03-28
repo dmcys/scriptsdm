@@ -1,7 +1,5 @@
 #!bin/bash
 install_privoxy() {
-# Define function to install and configure Privoxy
-install_prvoxy() {
   # Install Privoxy
   sudo apt-get update
   sudo apt-get install privoxy -y
@@ -12,22 +10,7 @@ install_prvoxy() {
   # Print configuration information
   echo "Privoxy installed and configured on port $port"
 }
-# Ask user for input
-read -p "Do you want to install and configure Privoxy? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  read -p "Enter the port number to use for Privoxy (default is 8118): " port
-  port=${port:-8118}
-  install_prvoxy
-else
-  echo "Privoxy installation canceled by user"
-fi
-}
-install_privoxy
-
 uninstall_privoxy() {
-uninstall_prvoxy() {
-# Stop Privoxy service
 sudo systemctl stop privoxy
 # Remove Privoxy package
 sudo apt remove privoxy -y
@@ -36,14 +19,20 @@ sudo rm -rf /etc/privoxy/
 sudo rm -rf /var/log/privoxy/
 echo "Privoxy configuration has been removed successfully."
 }
-# Ask user for input
-read -p "Do you want to uninstall Privoxy? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  uninstall_prvoxy
-else
-  echo "Privoxy uninstallation canceled by user"
-fi
-}
-}
+#Menu principal
+echo "Menu Privoxy"
+echo "Choose"
+echo "1. Install Privoxy"
+echo "2. Uninstall Privoxy"
+read choice
+case $choice in
+1)
+install_privoxy
+;;
+2)
 uninstall_privoxy
+;;
+*)
+echo "Invalid option."
+;;
+esac
