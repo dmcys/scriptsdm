@@ -111,7 +111,7 @@ configure_shadowscks(){
     "timeout":$TIMEOUT,
     "method":"$METHOD"
 }
-EOF"
+EOF
 
     echo "Shadowsocks configuration file written to /etc/shadowsocks-libev/config.json"
     }
