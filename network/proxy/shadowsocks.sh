@@ -1,5 +1,6 @@
 #!/bin/bash
 install_shadowsocks() {
+install_shadowscks() {
 # Prompt the user for the Shadowsocks configuration
 read -p "Enter the server IP address: " server_ip
 read -p "Enter the server port number: " server_port
@@ -29,9 +30,19 @@ sudo systemctl restart shadowsocks-libev
 
 echo "Shadowsocks has been successfully installed and configured!"
 }
+# Ask user for input
+read -p "Do you want to install Shadowsocks? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  install_shadowscks
+else
+  echo "Shadowsocks installation canceled by user"
+fi
+}
 install_shadowsocks
 
 uninstall_shadowsocks() {
+uninstall_shadowscks() {
 # Stop Shadowsocks service
 systemctl stop shadowsocks-libev
 # Uninstall Shadowsocks
@@ -45,5 +56,14 @@ rm -rf /etc/systemd/system/shadowsocks-libev.service
 # Reload systemd
 systemctl daemon-reload
 echo "Shadowsocks has been completely uninstalled and logs cleaned."
+}
+# Ask user for input
+read -p "Do you want to uninstall Shadowsocks? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  uninstall_shadowscks
+else
+  echo "Shadowsocks uninstallation canceled by user"
+fi
 }
 uninstall_shadowsocks
