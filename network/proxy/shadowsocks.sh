@@ -1,7 +1,6 @@
 #!/bin/bash
 
 install_shadowsocks() {
-install_shadowscks() {
 # Prompt the user for the Shadowsocks configuration
 read -p "Enter the server IP address: " server_ip
 read -p "Enter the server port number: " server_port
@@ -31,19 +30,8 @@ sudo systemctl restart shadowsocks-libev
 
 echo "Shadowsocks has been successfully installed and configured!"
 }
-# Ask user for input
-read -p "Do you want to install Shadowsocks? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  install_shadowscks
-else
-  echo "Shadowsocks installation canceled by user"
-fi
-}
-install_shadowsocks
 
 uninstall_shadowsocks() {
-uninstall_shadowscks() {
 # Stop Shadowsocks service
 systemctl stop shadowsocks-libev
 # Uninstall Shadowsocks
@@ -58,19 +46,8 @@ rm -rf /etc/systemd/system/shadowsocks-libev.service
 systemctl daemon-reload
 echo "Shadowsocks has been completely uninstalled and logs cleaned."
 }
-# Ask user for input
-read -p "Do you want to uninstall Shadowsocks? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  uninstall_shadowscks
-else
-  echo "Shadowsocks uninstallation canceled by user"
-fi
-}
-uninstall_shadowsocks
 
 configure_shadowsocks() {
-configure_shadowscks(){
     echo "Configuring Shadowsocks..."
     
     # Default values
@@ -117,21 +94,9 @@ EOF
 
     echo "Shadowsocks configuration file written to /etc/shadowsocks-libev/config.json"
     echo -ne -n -e "Shadowsocks Password: ${input_password}"
-    }
-# Ask user for input
-read -p "Do you want to install Shadowsocks? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  configure_shadowscks
-else
-  echo "Shadowsocks configuration canceled by user"
-fi
 }
-configure_shadowsocks
 
 whonix() {
-whnix(){
-#!/bin/bash
 # Install Shadowsocks
 sudo apt-get update
 sudo apt-get install shadowsocks-libev -y
@@ -158,20 +123,9 @@ sudo ufw --force enable
 # Print configuration information
 echo "Shadowsocks server running on port 8388"
 echo "Make sure to configure your Shadowsocks client to connect to this server"
-    }
-# Ask user for input
-read -p "Do you want to install Shadowsocks as server mode in Whonix-CLI? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  whnix
-else
-  echo "Whonix configuration canceled by user"
-fi
 }
-whonix
 
 firewall() {
-firewll() {
 # porta do Shadowsocks (altere caso necessário)
 local PORTA=1080
 # verifica se o serviço Shadowsocks está em execução
@@ -184,13 +138,41 @@ if systemctl is-active shadowsocks > /dev/null; then
 # fecha a porta no firewall
   sudo ufw delete allow $PORTA
 fi
-    }
-# Ask user for input
-read -p "Do you want to install Shadowsocks? (y/n) " choice
-# Check user input
-if [[ "$choice" == [yY] ]]; then
-  firewll
-else
-  echo "Firewall monitor canceled by user"
-fi
 }
+
+#Menu principal
+
+echo "ShadowSocks Menu"
+echo "Inser your choose:"
+echo "1. Install ShadowSocks"
+echo "2. Uninstall ShadowSocks"
+echo "3. Configure ShadowSocks"
+echo "4. Whonix"
+echo "5. Firewall"
+echo ""
+echo "q. Quit"
+read choice
+
+case $choice in
+1)
+install_shadowsocks
+;;
+2)
+uninstall_shadowsocks
+;;
+3)
+configure_shadowsocks
+;;
+4)
+whonix
+;;
+5)
+firewall
+;;
+q)
+clear
+exit;;
+*)
+echo "Opção inválida, por favor selecione uma opção válida"
+;;
+esac
