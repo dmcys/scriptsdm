@@ -1,4 +1,5 @@
-// shadowsocks.sh, functions: ``` 
+// shadowsocks.sh, functions:  
+``` 
 install_shadowsocks  
 uninstall_shadowsocks  
 configure_shadowsocks // Default Config  
