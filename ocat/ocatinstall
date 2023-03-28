@@ -3,6 +3,7 @@ ocatinstall() {
 ocatinstal() {
 # Function to install OnionCat
 install_onioncat() {
+  sar="sudo apt -y"
   echo "This script downloads, compiles and installs OnionCat."
   echo "This action is irreversible."
   read -p "Press Enter to continue or q to quit." enter
@@ -10,12 +11,13 @@ install_onioncat() {
     return
   fi
   echo "Downloading OnionCat..." && sleep 2
-  sudo apt -y update && sudo apt -y install unzip && cd /home/$USER/
+  $sar update && $sar install unzip automake && cd /home/$USER/
   wget https://github.com/rahra/onioncat/archive/refs/heads/master.zip && unzip master.zip && cd onioncat-master/
   echo "OnionCat downloaded! Now go install!" && sleep 2
   sudo sh /home/$USER/onioncat-master/autogen.sh
   ./configure
   sudo make && sudo make install
+  $sar remove automake;$sar purge automake;$sar autoremove
   echo "OnionCat installed successfully." && sleep 2
   main_menu
 }
