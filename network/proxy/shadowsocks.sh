@@ -1,4 +1,20 @@
 #!/bin/bash
+firewall() {
+# porta do Shadowsocks (altere caso necessário)
+local PORTA=1080
+# verifica se o serviço Shadowsocks está em execução
+if systemctl is-active shadowsocks > /dev/null; then
+  echo "Shadowsocks em execução. Liberando porta $PORTA no firewall..."
+# libera a porta no firewall
+  sudo ufw allow $PORTA
+ else
+  echo "Shadowsocks não está em execução. Fechando porta $PORTA no firewall..."
+# fecha a porta no firewall
+  sudo ufw delete allow $PORTA
+fi
+}
+
+
 install_shadowsocks() {
 install_shadowscks() {
 # Prompt the user for the Shadowsocks configuration
