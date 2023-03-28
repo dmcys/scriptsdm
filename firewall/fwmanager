@@ -1,4 +1,6 @@
 #!bin/sh
+fwmanager() {
+fwmanagr() {
 {
 while true $a in $='a'
 do
@@ -152,3 +154,14 @@ esac
 done
 menu
 }
+}
+# Ask user for input
+read -p "Do you want use firewall manager? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  fwmanagr
+else
+  echo "Firewall manager canceled by user"
+fi
+}
+fwmanager
