@@ -1,4 +1,5 @@
-##### Calling one function from external shell source ##################################################################################################################################
+(1)#### Calling one function from external shell source
+
 #Function to configure the Bitcoin node with OnionCat
 onioncat_config() {
 # Define a function to load the external script
@@ -11,4 +12,6 @@ load_external_script
 # Call a function from the external script
 bitcoin_onioncat_installation
 }
-########################################################################################################################################################################################
+
+(2)#### Output of cat directly to clipboard
+cat arquivo.txt | xclip -selection clipboard
