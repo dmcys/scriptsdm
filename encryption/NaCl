@@ -1,4 +1,6 @@
 #!bin/bash
+nacl(){
+nac(){
 echo -ne -n -e "This require there: NaCl (Networking and Cryptography library)\nlib: libsodium-dev, you decide install it? y/n";read anslib;
 if [ $anslib == "y" ]; then
 sudo apt-get install libsodium-dev
@@ -31,3 +33,14 @@ nacl box-open myfile.enc myfile.dec -k "$key" -n "$nonce"
 else
 echo "";
 fi
+}
+# Ask user for input
+read -p "Do you want use NaCL? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  nac
+else
+  echo "NaCL use canceled by user"
+fi
+}
+nacl
