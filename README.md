@@ -12,7 +12,7 @@ https://raw.githubusercontent.com/defiminds/scripts/main/ocat/ocatinstall # Ocat
 https://raw.githubusercontent.com/defiminds/scripts/main/ipfs/install.sh # IPFS install  
 https://raw.githubusercontent.com/defiminds/scripts/main/ipfs/ipfsmenu.sh # IPFS Menu  
 https://raw.githubusercontent.com/defiminds/scripts/main/languages/python/web3/walletgen_.py # WEB3 Wallet GEN  
-https://raw.githubusercontent.com/defiminds/scripts/main/languages/python/web3/0xcapture.py # 0xCapture to web3 wallet gen  
+https://raw.githubusercontent.com/defiminds/scripts/main/languages/python/web3/0xcapture.py # 0xCapture to web3   
   
 ## Proxies  
 https://raw.githubusercontent.com/defiminds/scripts/main/network/proxy/shadowsocks.sh # ShadowSocks  
