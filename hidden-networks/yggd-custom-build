@@ -1,5 +1,6 @@
 #!/bin/bash
-
+yggd_custom_build() {
+yggd_custom_buid() {
 # Install Go
 sudo apt-get update
 sudo apt-get install -y golang
@@ -69,3 +70,14 @@ read START
 if [ "$START" = "y" ]; then
     ./yggdrasil-go/yggdrasil
 fi
+}
+# Ask user for input
+read -p "Do you want to install yggd custom build? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  yggd_custom_buid
+else
+  echo "yggd custom build installation canceled by user"
+fi
+}
+yggd_custom_build
