@@ -44,7 +44,7 @@ function execute_scripts_from_source() {
 function list() {
   clear
   # Get the message from the URL and store it in a variable
-  message=$(curl -fsSL "https://raw.githubusercontent.com/defiminds/scripts/main/source.list")
+  message=$(curl -fsSL "https://raw.githubusercontent.com/defiminds/scripts/main/README.md")
   # Print the compacted message to the screen
   echo -ne -n -e "${message}"
 }
