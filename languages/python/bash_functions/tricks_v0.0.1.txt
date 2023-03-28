@@ -17,10 +17,7 @@ bitcoin_onioncat_installation
 cat arquivo.txt | xclip -selection clipboard
 
 (3)#### Create one user input that accept special characteres and bigger input with higher amount of lines
-  # Set the IFS variable to a newline character
-  IFS=$'\n'
-  echo "Enter multi-line input (press Ctrl+D to finish):"
-  text=""
-  while read -r -d '' line; do
-    text+="$line"$'\n'
-  done
+# Read input with multiple lines using the readarray command
+echo "Enter multi-line input:"
+readarray -t lines
+text=$(printf '%s\n' "${lines[@]}")
