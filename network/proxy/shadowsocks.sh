@@ -87,7 +87,9 @@ configure_shadowscks(){
     read -p "Enter server port (default: $SERVER_PORT): " input_server_port
     read -p "Enter local address (default: $LOCAL_ADDRESS): " input_local_address
     read -p "Enter local port (default: $LOCAL_PORT): " input_local_port
-    read -p "Enter password (default: $PASSWORD): " input_password
+    read -p "Enter password strong (default: 35): " input_passwordstr
+    input_password=$(openssl rand -base64 ${input_passwordstr})
+    #read -p "Enter password (default: $PASSWORD): " input_password
     read -p "Enter timeout in seconds (default: $TIMEOUT): " input_timeout
     read -p "Enter encryption method (default: $METHOD): " input_method
 
@@ -114,6 +116,7 @@ configure_shadowscks(){
 EOF
 
     echo "Shadowsocks configuration file written to /etc/shadowsocks-libev/config.json"
+    echo -ne -n -e "Shadowsocks Password: ${input_password}"
     }
 # Ask user for input
 read -p "Do you want to install Shadowsocks? (y/n) " choice
