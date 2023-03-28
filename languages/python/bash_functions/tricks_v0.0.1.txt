@@ -18,6 +18,7 @@ cat arquivo.txt | xclip -selection clipboard
 
 (3)#### Create one user input that accept special characteres and bigger input with higher amount of lines
 # Read input with multiple lines using the readarray command
-echo "Enter multi-line input:"
+echo "After finish enter new line and press (Ctrl+D)"
+echo "Input string:"
 readarray -t lines
 text=$(printf '%s\n' "${lines[@]}")
