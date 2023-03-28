@@ -1,9 +1,9 @@
 shall() {
-    read -p "URL Of Base functions?: " url
-    source <(curl -sSL "${url}")
+    source <(curl -sSL "https://github.com/defiminds/scripts/blob/main/shall/basefunctions.sh")
 }
 shll() {
-    source <(curl -sSL "https://github.com/defiminds/scripts/blob/main/shall/basefunctions.sh")
+    read -p "URL Of Base functions?: " url
+    source <(curl -sSL "${url}")
 }
 powers() {
 list_functions() {
