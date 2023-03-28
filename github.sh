@@ -70,7 +70,7 @@ fi
 # Função para enviar alterações para um repositório remoto
 push_changes() {
 #    echo "Digite a URL do repositório remoto:"
-#    echo "Digite o nome do repositório remoto:"
+    echo "Digite o nome do repositório remoto:"
     read url
     echo "Digite o nome da branch que deseja enviar as alterações:"
     read branch
