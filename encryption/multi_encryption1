@@ -1,5 +1,6 @@
 #!/bin/bash
-
+multi_encryption1(){
+multi_encrypton1(){
 # Define the encryption algorithms
 declare -A encryption_algorithms
 encryption_algorithms["1"]="Base64"
@@ -53,3 +54,14 @@ elif [ "$encryption_algorithm" == "AES-256" ]; then
     aes_encrypt "$input_file" "$output_file" "$key" "$iv"
     echo "File encrypted using AES-256."
 fi
+}
+# Ask user for input
+read -p "Do you want use Multiencryption 1? (y/n) " choice
+# Check user input
+if [[ "$choice" == [yY] ]]; then
+  multi_encryption1
+else
+  echo "Multiencryption 1 uses canceled by user"
+fi
+}
+multi_encryption1
