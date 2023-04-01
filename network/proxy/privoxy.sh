@@ -1,4 +1,5 @@
 #!bin/bash
+privoxy() {
 install_privoxy() {
   # Install Privoxy
   sudo apt-get update
@@ -36,3 +37,5 @@ uninstall_privoxy
 echo "Invalid option."
 ;;
 esac
+}
+privoxy
