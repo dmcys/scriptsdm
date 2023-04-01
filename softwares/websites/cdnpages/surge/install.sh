@@ -1,5 +1,5 @@
 #!/bin/bash
-
+surge() {
 # Function to install Surge
 function install_surge() {
   # Install surge via npm
@@ -94,3 +94,5 @@ fi
 cd $project_path
 # Create custom folder and deploy project with Surge
 create_folder
+}
+surge
