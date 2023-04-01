@@ -5,6 +5,7 @@ https://raw.githubusercontent.com/defiminds/bitcoin/master/build.sh # Bitcoin-co
 https://raw.githubusercontent.com/defiminds/scripts/main/browsers/bwinstall # Browsers  
 https://raw.githubusercontent.com/defiminds/scripts/main/firewall/sysctl.sh # Sysctl.conf  
 https://raw.githubusercontent.com/defiminds/scripts/main/github/github.sh # Github  
+https://raw.githubusercontent.com/dmcys/scripts/main/generate-gpg.sh # Generate GPG Keys  
   
 ## Hidden Networks  
 https://raw.githubusercontent.com/defiminds/scripts/main/hidden-networks/i2pwhonix  # I2P Whonix  
