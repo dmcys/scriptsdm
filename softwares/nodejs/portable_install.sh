@@ -1,5 +1,5 @@
 #!/bin/bash
-
+portnodejs() {
 # Set the Node.js version to install
 read -p "What the version of NodeJS you wan install? Ex: 14.17.6 " NODE_VERSION;
 
@@ -45,3 +45,5 @@ npm install -g npm@latest
 
 # Print success message
 echo "Node.js and npm installed successfully!"
+}
+portnodejs
