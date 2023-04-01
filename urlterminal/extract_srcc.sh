@@ -1,5 +1,5 @@
 #!/bin/bash
-
+extsrc() {
 while true; do
   echo "Input URL that you need to extract the Src from:"
   read url
@@ -37,3 +37,5 @@ while true; do
       ;;
   esac
 done
+}
+extsrc
