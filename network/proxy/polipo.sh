@@ -1,4 +1,5 @@
 #!bin/bash
+polipo() {
 install_polipo() {
 install_polpo() {
 # Install Polipo
@@ -35,7 +36,6 @@ else
   echo "polipo installation canceled by user"
 fi
 }
-install_polipo
 
 uninstall_polipo() {
 uninstall_polpo() {
@@ -62,4 +62,17 @@ else
   echo "polipo uninstallation canceled by user"
 fi
 }
+
+while true; do
+read -p "1) install polipo, 2) uninstall polipo, q) Exit " choice
+if [ $choice == "1" ]; then
+install_polipo
+elif [ $choice == "2" ]; then
 uninstall_polipo
+elif [ $choice == "q" ]; then
+exit;;
+fi
+esac
+done
+}
+polipo
