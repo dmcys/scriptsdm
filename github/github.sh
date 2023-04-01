@@ -1,4 +1,5 @@
 #!/bin/bash
+github() {
 CONFIG_FILE=~/.git-manager.conf
 
 # Função para clonar um repositório
@@ -197,3 +198,5 @@ configure_profile
 echo "Opção inválida, por favor selecione uma opção válida"
 ;;
 esac
+}
+github
