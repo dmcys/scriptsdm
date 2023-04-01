@@ -1,5 +1,5 @@
 #!/bin/bash
-
+shadowsocks() {
 install_shadowsocks() {
 # Prompt the user for the Shadowsocks configuration
 read -p "Enter the server IP address: " server_ip
@@ -176,3 +176,5 @@ exit;;
 echo "Opção inválida, por favor selecione uma opção válida"
 ;;
 esac
+}
+shadowsocks
