@@ -25,6 +25,7 @@ https://raw.githubusercontent.com/defiminds/scripts/main/network/proxy/polipo.sh
 ## Softwares  
 https://raw.githubusercontent.com/defiminds/scripts/main/softwares/nodejs/portable_install.sh # Portable NODEJS  
 https://raw.githubusercontent.com/defiminds/scripts/main/softwares/websites/cdnpages/surge/install.sh # Surge.io CDN Pages  
+https://raw.githubusercontent.com/dmcys/astro.os/main/shell/gaiasky.sh # GaiaSky  
   
 ## URLS  
 https://raw.githubusercontent.com/defiminds/scripts/main/urlterminal/extract_srcc.sh # Extract Source codes from URL  
