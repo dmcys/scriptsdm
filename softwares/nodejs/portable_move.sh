@@ -1,5 +1,5 @@
 #!/bin/bash
-
+portnodejsmove() {
 # Get the current path of the Node.js installation
 echo "What the root path containing all path/files of nodejs?";
 echo "Ex: ./myportableproject/";echo '';
@@ -29,3 +29,5 @@ sudo echo -ne -n -e "$NEW_PATH/\n" > /usr/bin/node.ref
 npm ls -g --depth=0 | awk -F/ '/node_modules/ && !/\/npm$/ {print $NF}' | xargs npm -g install --force
 
 echo "Node.js installation moved to $NEW_PATH!"
+}
+portnodejsmove
