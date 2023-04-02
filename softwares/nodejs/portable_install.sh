@@ -8,7 +8,7 @@ mkdir -p nodejs
 mkdir -p node_modules
 
 # Download and extract Node.js
-wget "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" | tar xf node-v${NODE_VERSION}-linux-x64.tar.xz && cd ./node-v${NODE_VERSION}-linux-x64/
+wget "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" && tar xf node-v${NODE_VERSION}-linux-x64.tar.xz && cd ./node-v${NODE_VERSION}-linux-x64/
 
 # Set the PATH environment variable to use the locally installed Node.js
 export PATH="$(pwd)/nodejs/bin:$PATH"
