@@ -35,7 +35,6 @@ echo "In next updates.."
 elif [ $a=="4" ]; then
 sudo apt -y update && sudo apt -y install firefox
 fi
-echo;;
 }
 # Ask user for input
 read -p "Do you want to install one Browser? (y/n) " choice
