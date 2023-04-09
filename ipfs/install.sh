@@ -1,5 +1,5 @@
 #!/bin/bash
-
+instipfs() {
 # Check if IPFS is installed
 if ! command -v ipfs &> /dev/null
 then
@@ -42,3 +42,5 @@ then
 else
     echo "IPFS is already installed on your system."
 fi
+}
+instipfs
